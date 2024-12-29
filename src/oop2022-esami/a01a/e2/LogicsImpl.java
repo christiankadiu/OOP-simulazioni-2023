@@ -48,7 +48,7 @@ public class LogicsImpl implements Logics {
 
     @Override
     public boolean toQuit() {
-        if ((checkDiagonalsLeft() || checkDiagonalsRight()) && this.count == 3){
+        if ((checkDiagonalsLeft() || checkDiagonalsRight()) && this.count >= 3){
             return true;
         }
         return false;
@@ -72,21 +72,37 @@ public class LogicsImpl implements Logics {
                 t--;
             }
         }
+        // for (int i = (this.size - 1); i > 0; i--){
+        //     j = i;
+        //     t = this.size - 1;
+        //     c = 0;
+        //     while (j > 0 && t > 0){
+        //         if (matrice.get(j).get(t)){
+        //             c++;
+        //         }
+        //         if (c == 3){
+        //             return true;
+        //         }
+        //         j--;
+        //         t--;
+        //     }
+        // }
         for (int i = (this.size - 1); i > 0; i--){
             j = i;
             t = this.size - 1;
             c = 0;
-            while (j > 0 && t > 0){
+            while (j < size && t >= 0){
                 if (matrice.get(j).get(t)){
                     c++;
                 }
                 if (c == 3){
                     return true;
                 }
-                j--;
+                j++;
                 t--;
             }
         }
+        
         return false;
     }
 

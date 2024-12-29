@@ -26,7 +26,7 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e){
         	    var button = (JButton)e.getSource();
         	    var position = cells.get(button);
-                button.setText(""+logic.get(position));
+                button.setText(logic.get(position));
                 if (logic.toQuit()){
                     System.exit(0);
                 }

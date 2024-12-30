@@ -3,12 +3,13 @@ package a01b.e2;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.management.openmbean.ArrayType;
+
 
 public class LogicsImpl implements Logics {
 
     int size;
     List<List<Boolean>> matrice;
+    Boolean quit = false;
 
     LogicsImpl(int size) {
         this.size = size;
@@ -23,13 +24,22 @@ public class LogicsImpl implements Logics {
     }
 
     @Override
-    public List<Pair<Integer, Integer>> get(Pair<Integer, Integer> position) {
-        List<Pair<Integer, Integer>> lista = new ArrayList<>();
-        if (matrice.get(position.getX()).get(position.getY())) {
-            return lista;
-        } else {
-            lista = setta(position);
-            return lista;
+    public void hit(Pair<Integer, Integer> position) {
+        int posi = 0;
+        int neg = 0;
+        if (!matrice.get(position.getX()).get(position.getY())) {
+            for (Pair<Integer, Integer> pos : Adjacent(position)) {
+                if (matrice.get(pos.getX()).get(pos.getY())){
+                    neg++;
+                    matrice.get(pos.getX()).set(pos.getY(), false);
+                }else{
+                    posi++;
+                    matrice.get(pos.getX()).set(pos.getY(), true);
+                } 
+            }
+        }
+        if (posi == 3 && neg == 1){
+            this.quit = true;
         }
     }
 
@@ -50,16 +60,21 @@ public class LogicsImpl implements Logics {
         return vicini;
     }
 
-    private List<Pair<Integer, Integer>> setta(Pair<Integer, Integer> pos) {
-        List<Pair<Integer, Integer>> lista = new ArrayList<>(Adjacent(pos));
-        for (Pair<Integer, Integer> posit : lista) {
-            if (matrice.get(posit.getX()).get(posit.getY())) {
-                matrice.get(posit.getX()).set(posit.getY(), false);
-            } else {
-                matrice.get(posit.getX()).set(posit.getY(), true);
-            }
+
+    @Override
+    public boolean isEnabled(Pair<Integer, Integer> pos) {
+        if (matrice.get(pos.getX()).get(pos.getY())){
+            return true;
         }
-        return lista;
+        return false;
+    }
+
+    @Override
+    public boolean toQuit(){
+        if (this.quit){
+            return true;
+        }
+        return false;
     }
 
 }

@@ -1,9 +1,12 @@
 package a01b.e2;
 
-import java.util.List;
 
 public interface Logics {
 
-    List<Pair<Integer, Integer>> get(Pair<Integer, Integer> position);
+    void hit(Pair<Integer, Integer> position);
+
+    boolean isEnabled(Pair<Integer, Integer> pos);
+
+    boolean toQuit();
 
 }

@@ -9,11 +9,9 @@ public class GUI extends JFrame {
     
     private final Map<JButton, Pair<Integer,Integer>> cells = new HashMap<>();
     private Logic logic;
-    private final int size;
     
     public GUI(int size) {
         this.logic = new LogicImpl(size);
-        this.size = size;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(100*size, 100*size);
         

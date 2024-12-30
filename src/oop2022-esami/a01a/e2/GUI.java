@@ -5,7 +5,6 @@ import javax.swing.*;
 import a01a.e1.Pair;
 
 import java.util.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 

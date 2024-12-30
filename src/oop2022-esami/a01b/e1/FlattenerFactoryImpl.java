@@ -1,6 +1,5 @@
 package a01b.e1;
 
-import java.lang.annotation.Retention;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;

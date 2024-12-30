@@ -96,9 +96,13 @@ public class RecursiveIteratorHelpersImpl implements RecursiveIteratorHelpers{
             @Override
             public RecursiveIterator<X> next() {
                 if (current == 1){
-                    first.next();
+                    if (first.next() == null){
+                        
+                    }
                 }else{
-                    second.next();
+                    if (second.next() == null){
+
+                    }
                 }
                 return this;
             }

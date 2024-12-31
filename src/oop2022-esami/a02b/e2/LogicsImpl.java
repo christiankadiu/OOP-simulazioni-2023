@@ -67,7 +67,7 @@ public class LogicsImpl implements Logics {
             col++;
         }
 
-        if (count >= 3) {
+        if (count == 3) {
             return diagonal;
         }
 

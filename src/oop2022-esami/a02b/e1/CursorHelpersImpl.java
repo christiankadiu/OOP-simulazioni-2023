@@ -72,7 +72,6 @@ public class CursorHelpersImpl implements CursorHelpers {
                     return false;
                 }
             }
-
         };
     }
 

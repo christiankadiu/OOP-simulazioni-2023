@@ -4,7 +4,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
-import javax.print.DocFlavor.INPUT_STREAM;
+
 
 public class BankAccountFactoryImpl implements BankAccountFactory{
 
@@ -132,54 +132,10 @@ public class BankAccountFactoryImpl implements BankAccountFactory{
 
     @Override
     public BankAccount createWithFeeAndCredit(UnaryOperator<Integer> feeFunction, Predicate<Integer> allowedCredit,
-        UnaryOperator<Integer> rateFunction) {
-    return new BankAccount() {
-        int balance = 0;
-        
-        @Override
-        public int getBalance() {
-            return this.balance;
-        }
-
-        @Override
-        public void deposit(int amount) {
-            this.balance += amount;
-        }
-
-        @Override
-        public boolean withdraw(int amount) {
-            // Se il prelievo è maggiore o uguale a 35
-            if (amount >= 35) {
-                // Se il saldo non è sufficiente per coprire il prelievo
-                if (amount > this.balance) {
-                    // Calcolare il credito necessario
-                    int creditRequired = amount - this.balance;
-
-                    // Verifica che il credito sia consentito
-                    if (allowedCredit.test(creditRequired) && this.balance + creditRequired <= 100) {
-                        // Se il saldo è insufficiente e il credito è sufficiente,
-                        // applica il prelievo, la tassa fissa e la tassa sul credito
-                        this.balance = this.balance - amount - 1 - rateFunction.apply(amount);
-                        return true;
-                    } else {
-                        // Il credito non è consentito
-                        return false;
-                    }
-                } else {
-                    // Se il saldo è sufficiente, preleva solo la somma con tassa fissa
-                    this.balance = this.balance - amount - 1;
-                    return true;
-                }
-            } else {
-                // Se il prelievo è inferiore a 35, preleva senza tassa aggiuntiva
-                this.balance = this.balance - amount;
-                return true;
-            }
-        }
-    };
-}
-
-
+            UnaryOperator<Integer> rateFunction) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'createWithFeeAndCredit'");
+    }
 
         
 }

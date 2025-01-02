@@ -2,7 +2,6 @@ package a05.e2;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.*;
 

@@ -8,8 +8,10 @@ import java.awt.event.*;
 public class GUI extends JFrame {
 
     private final Map<JButton, Pair<Integer, Integer>> cells = new HashMap<>();
+    Logics logic;
 
     public GUI(int size) {
+        logic = new LogicsImpl(size);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(100 * size, 100 * size);
 
@@ -17,27 +19,31 @@ public class GUI extends JFrame {
         JPanel panel = new JPanel(new GridLayout(size, size));
         this.getContentPane().add(main);
         main.add(BorderLayout.CENTER, panel);
-        JButton go = new JButton("Go");
+        JButton go = new JButton("fire");
         main.add(BorderLayout.SOUTH, go);
-        go.addActionListener(e -> System.exit(0));
 
         ActionListener al = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                var button = (JButton) e.getSource();
-                var position = cells.get(button);
-                button.setText("" + position);
+                logic.hit();
+                updateCells();
             }
         };
 
-        Random r = new Random();
+        go.addActionListener(al);
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                final JButton jb = new JButton("" + r.nextInt(2) + "");
+                final JButton jb = new JButton(Integer.toString(logic.getNumber(i, j)));
                 this.cells.put(jb, new Pair<Integer, Integer>(i, j));
                 jb.addActionListener(al);
                 panel.add(jb);
             }
         }
         this.setVisible(true);
+    }
+    void updateCells(){
+        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
+            entry.getKey().setText(""+logic.getNumber(entry.getValue().getX(), entry.getValue().getY()));
+        }
     }
 }

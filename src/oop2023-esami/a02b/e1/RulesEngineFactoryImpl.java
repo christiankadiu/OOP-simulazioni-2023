@@ -73,9 +73,16 @@ public class RulesEngineFactoryImpl implements RulesEngineFactory{
 
             @Override
             public List<T> nextSolution() {
-                
+                List<T> pol = new ArrayList<>();
+                for (int i = 0; i < lista.size(); i++){
+                    if (lista.get(i).equals(baseRule.get1())){
+                        lista.addAll(i, baseRule.get2());
+                        lista.remove(i + baseRule.get2().size());
+                    }
+                }
+                current = 1;
+                return lista;
             }
-            
         };
     }
 

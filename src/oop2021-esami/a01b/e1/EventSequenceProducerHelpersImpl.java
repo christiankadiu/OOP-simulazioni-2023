@@ -1,7 +1,5 @@
 package a01b.e1;
 
-import java.lang.StackWalker.Option;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -25,18 +23,13 @@ public class EventSequenceProducerHelpersImpl implements EventSequenceProducerHe
 
     @Override
     public <E> List<E> window(EventSequenceProducer<E> sequence, double fromTime, double toTime) {
-        List<E> lista2 = new ArrayList<>();
-        List<Pair<Double, E>> lista = Stream.generate(() -> {
+        return Stream.generate(() -> {
             try{
                 return sequence.getNext();
             }catch(NoSuchElementException e){
                 return null;
             }
-        }).takeWhile(i -> i != null).filter(x -> (x.get1() >= fromTime && x.get1() <= toTime)).toList();
-        for (Pair<Double,E> pair : lista) {
-            lista2.add(pair.get2());
-        }
-        return lista2;
+        }).takeWhile(i -> i != null).filter(x -> (x.get1() >= fromTime && x.get1() <= toTime)).map(t -> t.get2()).toList();
     }
 
     @Override

@@ -26,8 +26,8 @@ public class LogicsImpl implements Logics {
             }
             if (adjacent().contains(pos)){
                 // Spostamento di 1 unità, non moltiplicare per 3
-                this.inizio = new Pair<>(inizio.getX() + (pos.getX() - inizio.getX()), 
-                                         inizio.getY() + (pos.getY() - inizio.getY()));
+                this.inizio = new Pair<>(inizio.getX() + (3*(pos.getX() - inizio.getX())), 
+                                         inizio.getY() + (3*(pos.getY() - inizio.getY())));
                 inizializzazione(inizio);
             }
         }

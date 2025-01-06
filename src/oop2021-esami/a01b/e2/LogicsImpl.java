@@ -36,10 +36,18 @@ public class LogicsImpl implements Logics {
     }
 
     private boolean compute(Pair<Integer, Integer> pos){
-        if (pos.getX() == prev.getX() || pos.getY() == prev.getY()){
-            add(pos);
-            prev = pos;
-            return true;
+        if (lista.size() == 1){
+            if (pos.getX() == prev.getX()){
+                add(pos);
+                prev = pos;
+                return true;
+            }
+        }else {
+            if (pos.getY() == prev.getY()){
+                add(pos);
+                prev = pos;
+                return true;
+            }
         }
         return false;
     }

@@ -124,14 +124,22 @@ public class CirclerFactoryImpl implements CirclerFactory {
 
             @Override
             public T produceOne() {
-                T t;
-                if (it.hasNext() && can) {
-                    can = false;
-                    return it.next();
+                // Se l'iteratore ha un elemento disponibile
+                if (it.hasNext()) {
+                    if (can) {
+                        can = false; // Dopo aver preso un elemento, cambia stato
+                        return it.next(); // Restituisci l'elemento
+                    } else {
+                        can = true; // Cambia stato per saltare il prossimo
+                        it.next(); // Salta un elemento
+                        return produceOne(); // Riprova con il prossimo elemento
+                    }
+                } else {
+                    // Quando l'iteratore è esaurito, ricrea la sorgente e inverte il comportamento
+                    setSource(lista);
+                    can = !can; // Inverti il comportamento (da "prendi" a "salta", e viceversa)
+                    return produceOne(); // Riparti dall'inizio
                 }
-                setSource(lista);
-                can = true;
-                return it.next();
             }
 
             @Override

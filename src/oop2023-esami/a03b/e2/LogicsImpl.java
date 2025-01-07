@@ -28,15 +28,11 @@ public class LogicsImpl implements Logics {
     }
 
     private void compose(Pair<Integer, Integer> pos) {
-        Pair<Integer, Integer> p = pos;
-        while (p.getY() != this.width) {
-            p = new Pair<Integer, Integer>(p.getX(), p.getY() + 1);
-            for (int i = p.getX() - 1; i <= p.getX() + 1; i++) {
-                Pair<Integer, Integer> po = new Pair<>(i, p.getY());
-                if (po.getY() == this.width) {
-                    break;
-                }
-                this.punti.add(po);
+        this.punti.add(pos);
+        while (pos.getX() != inizio.get().getX() || pos.getX() != this.width) {
+            pos = new Pair<Integer, Integer>(pos.getX() + 1, pos.getY());
+            for (int i = pos.getY() - 1; i <= pos.getY() + 1; i++) {
+                this.punti.add(new Pair<Integer, Integer>(pos.getX(), i));
             }
         }
     }

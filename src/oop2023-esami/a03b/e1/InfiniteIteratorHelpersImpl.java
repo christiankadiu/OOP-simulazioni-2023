@@ -8,6 +8,11 @@ import java.util.stream.Stream;
 
 public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
 
+    private <X> InfiniteIterator<X> ofStream(Stream<X> s) {
+        Iterator<X> it = s.iterator();
+        return () -> it.next();
+    }
+
     @Override
     public <X> InfiniteIterator<X> of(X x) {
         return new InfiniteIterator<X>() {
@@ -39,15 +44,7 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
 
     @Override
     public InfiniteIterator<Integer> incrementing(int start, int increment) {
-        return new InfiniteIterator<Integer>() {
-            int current = 0;
-
-            @Override
-            public Integer nextElement() {
-                return start + (increment * this.current++);
-            }
-
-        };
+        return ofStream(Stream.iterate(start, x -> x + increment));
     }
 
     @Override

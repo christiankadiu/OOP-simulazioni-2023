@@ -1,31 +1,64 @@
 package a02b.e1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
-public class RulesEngineFactoryImpl implements RulesEngineFactory{
+public class RulesEngineFactoryImpl implements RulesEngineFactory {
 
-    @Override
-    public <T> List<List<T>> applyRule(Pair<T, List<T>> rule, List<T> input) {
-        List<List<T>> result = new ArrayList<>();
-        int count = 0;
-        for (int i = 0; i < input.size(); i++) {
-            List<T> l = new ArrayList<>(input);
-            if (input.get(i).equals(rule.get1())){
-                int index = l.indexOf(input.get(i));
-                l.remove(index);
-                l.addAll(index, rule.get2());
-                result.add(l);
-                count++;
-            }
-        }
+    private <T> List<T> replaceAtPosition(int index, List<T> source, List<T> newElems) {
+        List<T> result = new ArrayList<>(source);
+        result.remove(index);
+        result.addAll(index, newElems);
         return result;
     }
 
     @Override
+    public <T> List<List<T>> applyRule(Pair<T, List<T>> rule, List<T> input) {
+        List<List<T>> lista = new ArrayList<>();
+        for (int i = 0; i < input.size(); i++) {
+            if (input.get(i).equals(rule.get1())) {
+                lista.add(replaceAtPosition(i, input, rule.get2()));
+            }
+        }
+        return lista;
+    }
+
+    @Override
     public <T> RulesEngine<T> singleRuleEngine(Pair<T, List<T>> rule) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'singleRuleEngine'");
+        return new RulesEngine<T>() {
+            List<T> lista;
+            boolean can = true;
+
+            @Override
+            public void resetInput(List<T> input) {
+                lista = new ArrayList<>(input);
+                can = true;
+            }
+
+            @Override
+            public boolean hasOtherSolutions() {
+                if (can) {
+                    can = false;
+                    return true;
+                }
+                return can;
+            }
+
+            @Override
+            public List<T> nextSolution() {
+                Iterator<T> it = lista.iterator();
+                for (int i = 0; i < lista.size(); i++) {
+                    if (rule.get1().equals(lista.get(i))) {
+                        lista.remove(i);
+                        lista.addAll(i, rule.get2());
+                    }
+                }
+                return lista;
+            }
+
+        };
     }
 
     @Override
@@ -40,6 +73,4 @@ public class RulesEngineFactoryImpl implements RulesEngineFactory{
         throw new UnsupportedOperationException("Unimplemented method 'conflictingRulesEngine'");
     }
 
-   
-    
 }

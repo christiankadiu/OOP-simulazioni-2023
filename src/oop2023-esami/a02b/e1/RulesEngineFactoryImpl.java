@@ -1,9 +1,8 @@
 package a02b.e1;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+
 
 public class RulesEngineFactoryImpl implements RulesEngineFactory {
 
@@ -48,7 +47,6 @@ public class RulesEngineFactoryImpl implements RulesEngineFactory {
 
             @Override
             public List<T> nextSolution() {
-                Iterator<T> it = lista.iterator();
                 for (int i = 0; i < lista.size(); i++) {
                     if (rule.get1().equals(lista.get(i))) {
                         lista.remove(i);
@@ -63,8 +61,27 @@ public class RulesEngineFactoryImpl implements RulesEngineFactory {
 
     @Override
     public <T> RulesEngine<T> cascadingRulesEngine(Pair<T, List<T>> baseRule, Pair<T, List<T>> cascadeRule) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'cascadingRulesEngine'");
+        return new RulesEngine<T>() {
+            List<T> lista;
+            boolean can = true;
+            int count = 0;
+            @Override
+            public void resetInput(List<T> input) {
+                lista = new ArrayList<>(input);
+            }
+
+            @Override
+            public boolean hasOtherSolutions() {
+               return count <= 2;
+            }
+
+            @Override
+            public List<T> nextSolution() {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'nextSolution'");
+            }
+            
+        };
     }
 
     @Override

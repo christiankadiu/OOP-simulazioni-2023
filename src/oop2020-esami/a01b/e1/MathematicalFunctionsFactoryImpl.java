@@ -1,7 +1,5 @@
 package a01b.e1;
 
-import java.lang.foreign.Linker.Option;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -12,12 +10,10 @@ public class MathematicalFunctionsFactoryImpl implements MathematicalFunctionsFa
 
     public class MathematicalFunctionImpl<A, B> implements MathematicalFunction<A, B> {
 
-        Map<A, B> mappa;
         Predicate<A> pred;
         Function<A, B> fun;
 
         MathematicalFunctionImpl(Predicate<A> pred, Function<A, B> fun) {
-            mappa = new HashMap<>();
             this.pred = pred;
             this.fun = fun;
         }
@@ -79,7 +75,7 @@ public class MathematicalFunctionsFactoryImpl implements MathematicalFunctionsFa
 
     @Override
     public <A, B> MathematicalFunction<A, B> fromMap(Map<A, B> map) {
-        return new MathematicalFunctionImpl<>(a -> map.containsKey(a), i -> map.get(i));
+        return new MathematicalFunctionImpl<>(map::containsKey, map::get);
     }
 
 }

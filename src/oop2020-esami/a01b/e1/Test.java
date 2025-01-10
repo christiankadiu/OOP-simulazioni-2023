@@ -4,26 +4,31 @@ import static org.junit.Assert.*;
 import java.util.*;
 
 /**
- * Si consulti la documentazione della interfaccia MathematicalFunctionFactor, che modella
- * una factory per MathematicalFunction, che a sua volta modella una funzione matematica,
- * che mappa elementi di un dominio (che potrebbe essere infinito) su un codominio.
+ * Si consulti la documentazione della interfaccia MathematicalFunctionFactor,
+ * che modella
+ * una factory per MathematicalFunction, che a sua volta modella una funzione
+ * matematica,
+ * che mappa elementi di un dominio (che potrebbe essere infinito) su un
+ * codominio.
  * 
- * Il commento alle interfacce fornite, e i metodi di test qui sotto costituiscono la necessaria 
+ * Il commento alle interfacce fornite, e i metodi di test qui sotto
+ * costituiscono la necessaria
  * spiegazione del problema.
  * 
  * Sono considerati opzionali ai fini della possibilità di correggere
  * l'esercizio, ma concorrono comunque al raggiungimento della totalità del
- * punteggio: 
- * - implementazione dei test opzionali (denominati 'optionalTestXYZ', ossia quelli relativi a 
- *   MathematicalFunction.restrict e MathematicalFunctionFactory.fromMap 
- * - minimizzazione di ripetizioni 
+ * punteggio:
+ * - implementazione dei test opzionali (denominati 'optionalTestXYZ', ossia
+ * quelli relativi a
+ * MathematicalFunction.restrict e MathematicalFunctionFactory.fromMap
+ * - minimizzazione di ripetizioni
  * - concisione del codice
  *
  * Si tolga il commento dal metodo init.
  * 
  * Indicazioni di punteggio:
  * - correttezza della parte obbligatoria: 10 punti
- * - correttezza della parte opzionale: 4 punti (2 per restrict, 2 per fromMap) 
+ * - correttezza della parte opzionale: 4 punti (2 per restrict, 2 per fromMap)
  * - qualità della soluzione: 3 punti
  * 
  */
@@ -34,7 +39,7 @@ public class Test {
 
 	@org.junit.Before
 	public void init() {
-		//this.factory = new MathematicalFunctionsFactoryImpl();
+		this.factory = new MathematicalFunctionsFactoryImpl();
 	}
 
 	@org.junit.Test
@@ -54,7 +59,7 @@ public class Test {
 		assertEquals(Optional.empty(), constant.apply(11));
 		assertEquals(Optional.empty(), constant.apply(-1));
 	}
-	
+
 	@org.junit.Test
 	public void testBasicIdentity() {
 		// Funzione che associa ogni intero in [0,1,2,...,10] se stesso
@@ -72,11 +77,11 @@ public class Test {
 		assertEquals(Optional.empty(), constant.apply(11));
 		assertEquals(Optional.empty(), constant.apply(-1));
 	}
-	
+
 	@org.junit.Test
 	public void testBasicFunction() {
 		// Funzione che associa ogni intero 'i' in [0,1,2,...,10] l'intero 'i+1'
-		MathematicalFunction<Double, Double> function = this.factory.fromFunction(i -> i >= 0 && i <= 10, i->i+1);
+		MathematicalFunction<Double, Double> function = this.factory.fromFunction(i -> i >= 0 && i <= 10, i -> i + 1);
 		assertTrue(function.inDomain(0.0));
 		assertTrue(function.inDomain(1.5));
 		assertTrue(function.inDomain(2.9));
@@ -90,11 +95,11 @@ public class Test {
 		assertEquals(Optional.empty(), function.apply(10.1));
 		assertEquals(Optional.empty(), function.apply(-0.1));
 	}
-	
+
 	@org.junit.Test
 	public void testBasicFunction2() {
 		// Funzione che associa ad ogni intero 'i' (qualsiasi) l'intero 'i+1'
-		MathematicalFunction<Integer, Integer> function = this.factory.fromFunction(i -> true, i->i+1);
+		MathematicalFunction<Integer, Integer> function = this.factory.fromFunction(i -> true, i -> i + 1);
 		assertTrue(function.inDomain(0));
 		assertTrue(function.inDomain(1));
 		assertTrue(function.inDomain(10000));
@@ -103,13 +108,14 @@ public class Test {
 		assertEquals(Optional.of(3), function.apply(2));
 		assertEquals(Optional.of(10001), function.apply(10000));
 	}
-	
+
 	@org.junit.Test
 	public void testWithUpdated1() {
 		// prende una costante e la aggiorna col mapping 0->1
-		// Dà una funzione che è 0 ovunque, tranne in 0, dove dà 1 (una specie di delta di dirac)"
-		MathematicalFunction<Integer, Integer> constant = this.factory.constant(a->true, 0);
-		MathematicalFunction<Integer, Integer> diracLike= constant.withUpdatedValue(0, 1);
+		// Dà una funzione che è 0 ovunque, tranne in 0, dove dà 1 (una specie di delta
+		// di dirac)"
+		MathematicalFunction<Integer, Integer> constant = this.factory.constant(a -> true, 0);
+		MathematicalFunction<Integer, Integer> diracLike = constant.withUpdatedValue(0, 1);
 		assertTrue(diracLike.inDomain(0));
 		assertTrue(diracLike.inDomain(1));
 		assertTrue(diracLike.inDomain(2));
@@ -119,12 +125,14 @@ public class Test {
 		assertEquals(Optional.of(0), diracLike.apply(2));
 		assertEquals(Optional.of(0), diracLike.apply(-10000));
 	}
-	
+
 	@org.junit.Test
 	public void testWithUpdated2() {
-		// Prende la funzione "+1" sul dominio [0,..,10], e gli aggiunge il mapping -10->-10
-		MathematicalFunction<Double, Double> function = this.factory.fromFunction(i -> i >= 0 && i <= 10, i->i+1);
-		MathematicalFunction<Double, Double> strange = function.withUpdatedValue(0.0, 0.0).withUpdatedValue(-10.0, -10.0);
+		// Prende la funzione "+1" sul dominio [0,..,10], e gli aggiunge il mapping
+		// -10->-10
+		MathematicalFunction<Double, Double> function = this.factory.fromFunction(i -> i >= 0 && i <= 10, i -> i + 1);
+		MathematicalFunction<Double, Double> strange = function.withUpdatedValue(0.0, 0.0).withUpdatedValue(-10.0,
+				-10.0);
 		assertTrue(strange.inDomain(0.0));
 		assertTrue(strange.inDomain(5.0));
 		assertTrue(strange.inDomain(10.0));
@@ -139,12 +147,12 @@ public class Test {
 		assertEquals(Optional.empty(), strange.apply(-9.9));
 		assertEquals(Optional.empty(), strange.apply(11.0));
 	}
-	
+
 	@org.junit.Test
 	public void testComposition1() {
 		// Compone la costante 1 con la funzione "+1", dando la costante 2
-		MathematicalFunction<Integer, Integer> f1 = this.factory.constant(a->true,1);
-		MathematicalFunction<Integer, Integer> f2 = this.factory.fromFunction(a->true,i->i+1);
+		MathematicalFunction<Integer, Integer> f1 = this.factory.constant(a -> true, 1);
+		MathematicalFunction<Integer, Integer> f2 = this.factory.fromFunction(a -> true, i -> i + 1);
 		MathematicalFunction<Integer, Integer> f3 = f1.composeWith(f2);
 		assertTrue(f3.inDomain(0));
 		assertTrue(f3.inDomain(1));
@@ -155,12 +163,12 @@ public class Test {
 		assertEquals(Optional.of(2), f3.apply(2));
 		assertEquals(Optional.of(2), f3.apply(10));
 	}
-	
+
 	@org.junit.Test
 	public void testComposition2() {
 		// Compone la funzione "+1" con la costante 1, dando la costante 1
-		MathematicalFunction<Integer, Integer> f1 = this.factory.constant(a->true,1);
-		MathematicalFunction<Integer, Integer> f2 = this.factory.fromFunction(a->true,i->i+1);
+		MathematicalFunction<Integer, Integer> f1 = this.factory.constant(a -> true, 1);
+		MathematicalFunction<Integer, Integer> f2 = this.factory.fromFunction(a -> true, i -> i + 1);
 		MathematicalFunction<Integer, Integer> f3 = f2.composeWith(f1);
 		assertTrue(f3.inDomain(0));
 		assertTrue(f3.inDomain(1));
@@ -171,14 +179,15 @@ public class Test {
 		assertEquals(Optional.of(1), f3.apply(2));
 		assertEquals(Optional.of(1), f3.apply(10));
 	}
-	
+
 	@org.junit.Test
 	public void optionalTestFromMap() {
-		Map<Integer,String> map = new HashMap<>();
+		Map<Integer, String> map = new HashMap<>();
 		map.put(0, "a");
 		map.put(1, "b");
 		map.put(2, "c");
-		// Funzione che associa ad ogni intero 'i' una string 's', proprio come farebbe la map 
+		// Funzione che associa ad ogni intero 'i' una string 's', proprio come farebbe
+		// la map
 		MathematicalFunction<Integer, String> mapFunction = this.factory.fromMap(map);
 		assertTrue(mapFunction.inDomain(0));
 		assertTrue(mapFunction.inDomain(1));
@@ -192,12 +201,12 @@ public class Test {
 		assertEquals(Optional.empty(), mapFunction.apply(-1));
 		assertEquals(Optional.empty(), mapFunction.apply(-1));
 	}
-	
+
 	@org.junit.Test
 	public void optionalTestRestrict() {
 		// prende una costante e la restringe al dominio coi soli valori 0,1,2,3
-		MathematicalFunction<Integer, Integer> constant = this.factory.constant(a->true, 0);
-		MathematicalFunction<Integer, Integer> fun = constant.restrict(Set.of(0,1,2,3));
+		MathematicalFunction<Integer, Integer> constant = this.factory.constant(a -> true, 0);
+		MathematicalFunction<Integer, Integer> fun = constant.restrict(Set.of(0, 1, 2, 3));
 		assertTrue(fun.inDomain(0));
 		assertTrue(fun.inDomain(1));
 		assertTrue(fun.inDomain(2));

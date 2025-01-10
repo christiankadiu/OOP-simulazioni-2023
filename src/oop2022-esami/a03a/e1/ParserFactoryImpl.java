@@ -12,38 +12,37 @@ public class ParserFactoryImpl implements ParserFactory{
     @Override
     public <X> Parser<X> fromFinitePossibilities(Set<List<X>> acceptedSequences) {
         return new Parser<X>() {
-
             @Override
             public boolean accept(Iterator<X> iterator) {
                 List<X> lista = new ArrayList<>();
-                while (iterator.hasNext()){
+                while(iterator.hasNext()) {
                     lista.add(iterator.next());
-                }   
-                if (acceptedSequences.contains(lista)){
-                    return true;
                 }
-                return false;
+                return acceptedSequences.contains(lista);
             }
+            
         };
     }
 
     @Override
     public <X> Parser<X> fromGraph(X x0, Set<Pair<X, X>> transitions, Set<X> acceptanceInputs) {
         return new Parser<X>() {
-
+            X y0 = x0;
             @Override
             public boolean accept(Iterator<X> iterator) {
-                if (iterator.hasNext()){
-                    if (acceptanceInputs.contains(iterator.next())){
-                        return true;
-                    }else{
-                        Pair<X, X> pair = new Pair<X,X>(x0, iterator.next());
-                        if (transitions.contains(pair)){
-                            return accept(iterator);
-                        }
-                    }
+                if (!iterator.hasNext()){
+                    return false;
                 }
-                return false;
+                if (iterator.hasNext()){
+                    X app = iterator.next();
+                    Pair<X, X> p = new Pair<X,X>(y0, app);
+                    if (transitions.contains(p)){
+                        y0 = app;
+                        return true;
+                    }
+                    return false;
+                }
+                return true;
             }
             
         };
@@ -52,34 +51,62 @@ public class ParserFactoryImpl implements ParserFactory{
     @Override
     public <X> Parser<X> fromIteration(X x0, Function<X, Optional<X>> next) {
         return new Parser<X>() {
-            X prev = x0;
-            X curr = next.apply(x0).get();
+
+            X y = x0;
+
             @Override
             public boolean accept(Iterator<X> iterator) {
-                if (next.apply(prev).isPresent() && next.apply(prev) != Optional.empty()){
-                    if (iterator.hasNext()){
-                        curr = iterator.next();
-                        return accept(iterator);
-                    }else{
-                        return false;
-                    }
-                }else{
-                    return true;
+                if (!iterator.next().equals(y)){
+                    return false;
                 }
+                if (iterator.hasNext()){
+                    X app = iterator.next();
+                    if (next.apply(y).isPresent() && next.apply(y).get().equals(app)){
+                        y = app;
+                        return true;
+                    }
+                    return false;
+                    
+                }
+                return true;
             }
+            
         };
     }
 
     @Override
     public <X> Parser<X> recursive(Function<X, Optional<Parser<X>>> nextParser, boolean isFinal) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'recursive'");
+       return new Parser<X>() {
+
+        @Override
+        public boolean accept(Iterator<X> iterator) {
+            // TODO Auto-generated method stub
+            throw new UnsupportedOperationException("Unimplemented method 'accept'");
+        }
+        
+       };
     }
 
     @Override
     public <X> Parser<X> fromParserWithInitial(X x, Parser<X> parser) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromParserWithInitial'");
+        return new Parser<X>() {
+            @Override
+            public boolean accept(Iterator<X> iterator) {
+                int c = 0;
+                if(iterator.hasNext()){
+                    if (c == 0){
+                        c++;
+                        if (iterator.next().equals(x)){
+                            return true;
+                        }
+                        return false;
+                    }else{
+                        return parser.accept(iterator);
+                    }
+                }
+                return false;
+            }
+        };
     }
     
 }

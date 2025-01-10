@@ -4,4 +4,8 @@ public interface Logics {
 
     void hit(Pair<Integer, Integer> position);
 
+    int get(Pair<Integer, Integer> value);
+
+    boolean toQuit();
+
 }

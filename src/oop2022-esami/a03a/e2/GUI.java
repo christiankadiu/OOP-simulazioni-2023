@@ -24,17 +24,30 @@ public class GUI extends JFrame {
                 var button = (JButton) e.getSource();
                 var position = cells.get(button);
                 logic.hit(position);
+                draw();
+                if (logic.toQuit()) {
+                    logic = new LogicsImpl(size);
+                    draw();
+                }
             }
         };
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                final JButton jb = new JButton(" ");
+                final JButton jb = new JButton();
                 this.cells.put(jb, new Pair<Integer, Integer>(i, j));
                 jb.addActionListener(al);
                 panel.add(jb);
             }
         }
+        draw();
         this.setVisible(true);
+    }
+
+    private void draw() {
+        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
+            entry.getKey()
+                    .setText(logic.get(entry.getValue()) == 0 ? " " : logic.get(entry.getValue()) == 1 ? "P" : "C");
+        }
     }
 }

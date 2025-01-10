@@ -2,11 +2,8 @@ package a01a.e1;
 
 import static org.junit.Assert.*;
 
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Test {
 

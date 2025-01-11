@@ -43,25 +43,25 @@ public class LogicsImpl implements Logics {
         for (int i = pos.getX(), k = pos.getY(); i < this.size && k < this.size; i++, k++) {
             Pair<Integer, Integer> p = new Pair<Integer, Integer>(i, k);
             if (!enabled.contains(p) && !p.equals(pos)) {
-                enabled.add(p);
+                this.enabled.add(p);
             }
         }
         for (int i = pos.getX(), k = pos.getY(); i >= 0 && k >= 0; i--, k--) {
             Pair<Integer, Integer> p = new Pair<Integer, Integer>(i, k);
             if (!enabled.contains(p) && !p.equals(pos)) {
-                enabled.add(p);
+                this.enabled.add(p);
             }
         }
         for (int i = pos.getX(), k = pos.getY(); i >= 0 && k < this.size; i--, k++) {
             Pair<Integer, Integer> p = new Pair<Integer, Integer>(i, k);
             if (!enabled.contains(p) && !p.equals(pos)) {
-                enabled.add(p);
+                this.enabled.add(p);
             }
         }
         for (int i = pos.getX(), k = pos.getY(); i < size && k >= 0; i++, k--) {
             Pair<Integer, Integer> p = new Pair<Integer, Integer>(i, k);
             if (!enabled.contains(p) && !p.equals(pos)) {
-                enabled.add(p);
+                this.enabled.add(p);
             }
         }
     }

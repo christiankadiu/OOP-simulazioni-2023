@@ -38,7 +38,10 @@ public class GUI extends JFrame {
         this.setVisible(true);
     }
 
-    public void draw() {
+    private void draw() {
+        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
+            entry.getKey().setEnabled(true);
+        }
         for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
             entry.getKey()
                     .setText(logic.get(entry.getValue()) == 1 ? "B" : logic.get(entry.getValue()) == 2 ? "*" : " ");

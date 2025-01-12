@@ -120,25 +120,20 @@ public class EquivalenceFactoryImpl implements EquivalenceFactory {
 
             @Override
             public Set<Set<X>> partition() {
-                // Mappa per rappresentare i set di equivalenza
                 Map<X, Set<X>> equivalenceMap = new HashMap<>();
 
-                // Per ogni elemento del dominio, trova o crea il suo set di equivalenza
                 for (X x : domain()) {
                     Set<X> equivalenceSet = equivalenceMap.computeIfAbsent(x, k -> new HashSet<>());
-                    equivalenceSet.add(x); // Ogni elemento è equivalente a sé stesso
+                    equivalenceSet.add(x);
 
-                    // Trova tutti gli altri elementi equivalenti a x
                     for (X x2 : domain()) {
                         if (this.p.contains(new Pair<>(x, x2)) || this.p.contains(new Pair<>(x2, x))) {
                             equivalenceSet.add(x2);
-                            // Propaga l'equivalenza a x2
                             equivalenceMap.computeIfAbsent(x2, k -> equivalenceSet).addAll(equivalenceSet);
                         }
                     }
                 }
 
-                // Converte la mappa in un insieme di insiemi, rimuovendo duplicati
                 return new HashSet<>(new HashSet<>(equivalenceMap.values()));
             }
 

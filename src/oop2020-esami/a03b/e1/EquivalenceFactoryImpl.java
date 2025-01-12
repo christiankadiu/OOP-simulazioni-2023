@@ -1,6 +1,8 @@
 package a03b.e1;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
@@ -71,17 +73,16 @@ public class EquivalenceFactoryImpl implements EquivalenceFactory {
                 for (X x : domain) {
                     if (!noCont(set, x)) {
                         Set<X> app = new HashSet<>();
+                        app.add(x);
                         for (X x2 : domain) {
                             if (!x.equals(x2) && (predicate.test(x, x2))) {
                                 app.add(x2);
-                            } else {
-                                set.add(app);
-                                app = new HashSet<>();
                             }
+                            set.add(app);
                         }
                     }
                 }
-                return set;
+                return set.stream().distinct().collect(Collectors.toSet());
             }
 
             @Override
@@ -95,8 +96,59 @@ public class EquivalenceFactoryImpl implements EquivalenceFactory {
 
     @Override
     public <X> Equivalence<X> fromPairs(Set<Pair<X, X>> pairs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromPairs'");
+        return new Equivalence<X>() {
+
+            Set<Pair<X, X>> p = new HashSet<>(pairs);
+
+            @Override
+            public boolean areEquivalent(X x1, X x2) {
+                return pairs.contains(new Pair<X, X>(x1, x2));
+            }
+
+            @Override
+            public Set<X> domain() {
+                Set<X> set = new HashSet<>();
+                set.addAll(this.p.stream().map(i -> i.getX()).collect(Collectors.toSet()));
+                set.addAll(this.p.stream().map(i -> i.getY()).collect(Collectors.toSet()));
+                return set;
+            }
+
+            @Override
+            public Set<X> equivalenceSet(X x) {
+                return this.p.stream().filter(i -> i.getX().equals(x)).map(i -> i.getY()).collect(Collectors.toSet());
+            }
+
+            @Override
+            public Set<Set<X>> partition() {
+                // Mappa per rappresentare i set di equivalenza
+                Map<X, Set<X>> equivalenceMap = new HashMap<>();
+
+                // Per ogni elemento del dominio, trova o crea il suo set di equivalenza
+                for (X x : domain()) {
+                    Set<X> equivalenceSet = equivalenceMap.computeIfAbsent(x, k -> new HashSet<>());
+                    equivalenceSet.add(x); // Ogni elemento è equivalente a sé stesso
+
+                    // Trova tutti gli altri elementi equivalenti a x
+                    for (X x2 : domain()) {
+                        if (this.p.contains(new Pair<>(x, x2)) || this.p.contains(new Pair<>(x2, x))) {
+                            equivalenceSet.add(x2);
+                            // Propaga l'equivalenza a x2
+                            equivalenceMap.computeIfAbsent(x2, k -> equivalenceSet).addAll(equivalenceSet);
+                        }
+                    }
+                }
+
+                // Converte la mappa in un insieme di insiemi, rimuovendo duplicati
+                return new HashSet<>(new HashSet<>(equivalenceMap.values()));
+            }
+
+            @Override
+            public boolean smallerThan(Equivalence<X> eq) {
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'smallerThan'");
+            }
+
+        };
     }
 
     @Override

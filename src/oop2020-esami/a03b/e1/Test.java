@@ -128,7 +128,8 @@ public class Test {
 		assertEquals(Set.of("a", "b", "aa", "bb"), equivalence.domain());
 
 		// due set di equivalenza
-		assertEquals(Set.of(Set.of("aa", "bb"), Set.of("a", "b")), equivalence.partition());
+		assertEquals(Set.of(Set.of("aa", "bb"), Set.of("a", "b")),
+				equivalence.partition());
 
 		assertEquals(Set.of("a", "b"), equivalence.equivalenceSet("a"));
 		assertEquals(Set.of("bb", "aa"), equivalence.equivalenceSet("bb"));

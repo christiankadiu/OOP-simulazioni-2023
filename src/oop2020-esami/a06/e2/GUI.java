@@ -11,8 +11,10 @@ public class GUI extends JFrame {
 	private final List<JButton> cells = new LinkedList<>();
 	private final JButton next = new JButton(">");
 	private final Random random = new Random();
+	Logics logic;
 	
 	public GUI(int rows) {
+		logic = new LogicsImpl(rows);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setSize(5 * 100, 100);
 

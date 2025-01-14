@@ -26,18 +26,16 @@ public class LogicsImpl implements Logics {
 
     @Override
     public boolean check() {
+        int c = 0;
         if (lista.size() >= 3){
-            List<Pair<Integer, Integer>> list = lista.subList(lista.size() - 3, lista.size());
-            int x = list.get(0).getX();
-            int y = list.get(0).getY();
-            long cX = list.stream().filter(i -> i.getX() == x).count();
-            long cY = list.stream().filter(i -> i.getY() == y).count();
-            if (cX == 3 && cY == 3){
-                return true;
+            for (int i = 1; i <= 2; i++){
+                if (Math.abs(lista.get(lista.size() - i).getX()-lista.get(lista.size() - i - 1).getX()) == 1 && 
+                        Math.abs(lista.get(lista.size() - i).getY()-lista.get(lista.size() - i - 1).getY()) == 1){
+                            c++;
+                }
             }
-            return false;
         }
-        return false;
+        return c == 3;
     }
 
     

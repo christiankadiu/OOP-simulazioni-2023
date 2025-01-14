@@ -1,9 +1,6 @@
 package a01a.e2;
 
 import javax.swing.*;
-
-import a01a.e1.Pair;
-
 import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -25,9 +22,13 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e){
         	    var button = (JButton)e.getSource();
         	    var position = cells.get(button);
-                button.setText(logic.get(position));
-                if (logic.toQuit()){
-                    System.exit(0);
+                if (logic.hit(position)){
+                    button.setText("*");
+                }else{
+                    button.setText("");
+                }
+                if (logic.check()){
+                    System.out.println("Perso");
                 }
             }
         };

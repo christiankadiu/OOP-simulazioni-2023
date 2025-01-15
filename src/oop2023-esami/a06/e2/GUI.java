@@ -2,7 +2,6 @@ package a06.e2;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -10,8 +9,10 @@ public class GUI extends JFrame {
     
     private static final long serialVersionUID = -6218820567019985015L;
     private final Map<JButton, Pair<Integer, Integer>> cells = new HashMap<>();
+    Logics logic;
     
     public GUI(int width) {
+        logic = new LogicsImpl(width);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(70*width, 70*width);
         
@@ -20,7 +21,11 @@ public class GUI extends JFrame {
         
         ActionListener al = e -> {
             var jb = (JButton)e.getSource();
-        	jb.setText(String.valueOf(cells.get(jb)));
+            var pos = cells.get(jb);
+            if (logic.hit(pos)){
+                draw();
+            }
+            draw();
         };
                 
         for (int i=0; i<width; i++){
@@ -33,6 +38,11 @@ public class GUI extends JFrame {
             }
         }
         this.setVisible(true);
+    }
+    private void draw(){
+        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
+            entry.getKey().setText(""+logic.getNumber(entry.getValue()));
+        }
     }
     
 }

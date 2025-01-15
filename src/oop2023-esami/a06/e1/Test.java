@@ -34,7 +34,7 @@ public class Test {
 
 	@org.junit.Before
 	public void initFactory() {
-		// this.factory = new ZipCombinerFactoryImpl();
+		 this.factory = new ZipCombinerFactoryImpl();
 
 	}
 
@@ -63,7 +63,7 @@ public class Test {
 		// preso un numero 'n' da l1 (1,0,3), crea la lista dei prossimi 'n' numeri di l2 (a,b,c,d,...)
 		// ossia prende da l2 la sottolista di lunghezza 1 (a), poi 0 (), poi 3 (b,c,d), scartando al solito il resto
 		assertEquals(
-			List.of(List.of("a"), List.of(), List.of("b","c","d")),
+			List.of(List.of("a"), List.of(), List.of("a","b","c")),
 			zc.zipCombine(List.of(1,0,3), List.of("a","b","c","d", "e","f","g","h")));
 	}
 

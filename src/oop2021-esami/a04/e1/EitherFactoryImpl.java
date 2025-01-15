@@ -1,30 +1,29 @@
 package a04.e1;
 
-import java.lang.foreign.Linker.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class EitherFactoryImpl implements EitherFactory {
+public class EitherFactoryImpl<A, B> implements EitherFactory{
 
-    public class EitherImpl<A, B> implements Either<A, B> {
-        Optional<A> a;
-        Optional<B> b;
+    @SuppressWarnings("hiding")
+    private class EitherImpl<A, B> implements Either<A, B>{
 
-        private EitherImpl(Optional<A> a, Optional<B> b) {
-            if (a.isPresent() && b.isPresent()) {
-                throw new IllegalArgumentException();
-            }
-            this.a = a;
-            this.b = b;
+        Optional<B> success;
+        Optional<A> failure;
+
+        EitherImpl(Optional<A> fail, Optional<B> succ){
+            this.success = succ;
+            this.failure = fail;
         }
 
         @Override
         public boolean isFailure() {
-            return this.a.isPresent();
+            return this.failure.isPresent();
         }
 
         @Override
@@ -34,39 +33,44 @@ public class EitherFactoryImpl implements EitherFactory {
 
         @Override
         public Optional<A> getFailure() {
-            return a;
+            return this.failure;
         }
 
         @Override
         public Optional<B> getSuccess() {
-            return b;
+            return this.success;
         }
 
         @Override
         public B orElse(B other) {
-            if (b.isPresent()) {
-                return b.get();
+            if (isSuccess()){
+                return this.success.get();
             }
             return other;
         }
 
         @Override
         public <B1> Either<A, B1> map(Function<B, B1> function) {
-            if (isSuccess()) {
-                return new EitherImpl<A, B1>(Optional.empty(), Optional.of(function.apply(b.get())));
-            } else {
-                return (Either<A, B1>) failure(a);
+            if (isSuccess()){
+                return new EitherImpl<A, B1>(this.failure, Optional.of(function.apply(this.success.get())));
             }
+            return failure(null);
         }
 
         @Override
         public <B1> Either<A, B1> flatMap(Function<B, Either<A, B1>> function) {
-            return function.apply(b.get());
+            if (isSuccess()){
+                return function.apply(this.success.get());
+            }
+            return failure(this.failure.get());
         }
 
         @Override
         public <A1> Either<A1, B> filterOrElse(Predicate<B> predicate, A1 failure) {
-
+            if (this.isFailure() || predicate.test(this.success.get())){
+                return failure(failure);
+            }
+            return new EitherImpl<>(Optional.of(failure), this.success);
         }
 
         @Override
@@ -76,15 +80,16 @@ public class EitherFactoryImpl implements EitherFactory {
         }
 
     }
+   
 
     @Override
     public <A, B> Either<A, B> success(B b) {
-        return new EitherImpl<>(Optional.empty(), Optional.of(b));
+        return new EitherImpl<A,B>(Optional.empty(), Optional.ofNullable(b));
     }
 
     @Override
     public <A, B> Either<A, B> failure(A a) {
-        return new EitherImpl<>(Optional.of(a), Optional.empty());
+        return new EitherImpl<>(Optional.ofNullable(a), Optional.empty());
     }
 
     @Override
@@ -101,12 +106,12 @@ public class EitherFactoryImpl implements EitherFactory {
     public <A, B, C> Either<A, List<C>> traverse(List<B> list, Function<B, Either<A, C>> function) {
         List<C> lista = new ArrayList<>();
         for (B b : list) {
-            if (function.apply(b).isFailure()) {
+            if (function.apply(b).getFailure().isPresent()){
                 return failure(function.apply(b).getFailure().get());
             }
             lista.add(function.apply(b).getSuccess().get());
         }
         return success(lista);
     }
-
+    
 }

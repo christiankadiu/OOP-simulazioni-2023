@@ -43,12 +43,13 @@ public class GUI extends JFrame {
     }
 
     private void draw() {
+        int c = 0;
         for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
             entry.getKey().setText("");
         }
         for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
             if (logic.isPresent(entry.getValue())) {
-                entry.getKey().setText("" + count++);
+                entry.getKey().setText("" + c++);
             }
         }
     }

@@ -1,94 +1,71 @@
 package a01a.e2;
 
-import java.util.HashMap;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class LogicsImpl implements Logics{
+public class LogicsImpl implements Logics {
 
-    //private Set<Pair<Integer, Integer>> set;
-    private Map<Pair<Integer, Integer>, Integer> mappa;
-    private int size;
-    int count = 0;
+    int size;
+    List<Pair<Integer, Integer>> set;
 
-    LogicsImpl(int size){
+    LogicsImpl(int size) {
         this.size = size;
-        //set = new  HashSet<>();
-        mappa = new HashMap<>();
+        this.set = new ArrayList<>();
     }
 
     @Override
-    public void hit(Pair<Integer, Integer> pos) {
-        if (innesco(pos)){
-            innescazione();
-        }else{
-            if (!mappa.keySet().contains(pos)){
-                mappa.put(pos, count++);
-            }
+    public boolean hit(Pair<Integer, Integer> pos) {
+        if (isValid(pos) && !this.set.contains(pos)) {
+            this.set.add(pos);
+            return true;
         }
-    }
-
-    private boolean innesco(Pair<Integer, Integer> pos){
-        for (Pair<Integer,Integer> pair : mappa.keySet()) {
-            if (adjacent(pair).contains(pos)){
-                return true;
-            }
+        if (!this.set.contains(pos)) {
+            move();
         }
         return false;
     }
 
-    Set<Pair<Integer,Integer>> adjacent(Pair<Integer,Integer> pos){
-        Set<Pair<Integer,Integer>> setto = new HashSet<>();
-        for (int  i = pos.getX() - 1; i <= pos.getX() + 1; i++){
-            if (i >= 0 && i < size && (pos.getY() - 1) >= 0 && (pos.getY() + 1) < size){
-                Pair<Integer,Integer> pair = new Pair<Integer,Integer>(i, pos.getY() - 1);
-                if (!setto.contains(pair)){
-                    setto.add(pair);
-                }
+    private boolean isValid(Pair<Integer, Integer> p) {
+        for (Pair<Integer, Integer> pair : set) {
+            if (Adjacent(pair).contains(p)) {
+                return false;
             }
         }
-        for (int  i = pos.getX() - 1; i <= pos.getX() + 1; i++){
-            if (i >= 0 && i < size && (pos.getX() + 1) >= 0 && (pos.getX() + 1) < size){
-                Pair<Integer,Integer> pair = new Pair<Integer,Integer>(i, pos.getY() + 1);
-                if (!setto.contains(pair)){
-                    setto.add(pair);
-                }
-            }
-        }
-        for (int  i = pos.getY() - 1; i <= pos.getY() + 1; i++){
-            if (i >= 0 && i < size && (pos.getX() - 1) >= 0 && (pos.getX() - 1) < size){
-                Pair<Integer,Integer> pair = new Pair<Integer,Integer>(pos.getX() - 1, i);
-                if (!setto.contains(pair)){
-                    setto.add(pair);
-                }
-            }
-        }
-        for (int  i = pos.getY() - 1; i <= pos.getY() + 1; i++){
-            if (i >= 0 && i < size && (pos.getX() + 1) >= 0 && (pos.getX() + 1) < size){
-                Pair<Integer,Integer> pair = new Pair<Integer,Integer>(pos.getX() + 1, i);
-                if (!setto.contains(pair)){
-                    setto.add(pair);
-                }
-            }
-        }
-        return setto;
+        return true;
     }
 
-    void innescazione(){
-        Map<Pair<Integer, Integer>, Integer> app = new HashMap<>();
-        for (Map.Entry<Pair<Integer, Integer>, Integer> entry : mappa.entrySet()) {
-            Pair<Integer, Integer> p = new Pair<Integer,Integer>(entry.getKey().getX() + 1, entry.getKey().getY() + 1);
-            app.put(p, entry.getValue());
-        } 
-        mappa = new HashMap<>();
+    private List<Pair<Integer, Integer>> Adjacent(Pair<Integer, Integer> pos) {
+        List<Pair<Integer, Integer>> list = new ArrayList<>();
+        for (int i = pos.getX() - 1; i <= pos.getX() + 1; i++) {
+            list.add(new Pair<Integer, Integer>(i, pos.getY() + 1));
+        }
+        for (int i = pos.getX() - 1; i <= pos.getX() + 1; i++) {
+            list.add(new Pair<Integer, Integer>(i, pos.getY() - 1));
+        }
+        list.add(new Pair<Integer, Integer>(pos.getX(), pos.getY() + 1));
+        list.add(new Pair<Integer, Integer>(pos.getX(), pos.getY() - 1));
+        return list;
+    }
+
+    private void move() {
+        this.set = new ArrayList<>(this.set.stream().map(pair -> new Pair<>(pair.getX() - 1, pair.getY() + 1))
+                .collect(Collectors.toList()));
+        print();
     }
 
     @Override
-    public Optional<Integer> get(Pair<Integer, Integer> value) {
-        return Optional.ofNullable(mappa.get(value)); 
+    public boolean isPresent(Pair<Integer, Integer> value) {
+        return this.set.contains(value);
+    }
+
+    private void print() {
+        for (Pair<Integer, Integer> pair : set) {
+            System.out.print(pair + "\t");
+        }
+        System.out.println();
     }
 
 }

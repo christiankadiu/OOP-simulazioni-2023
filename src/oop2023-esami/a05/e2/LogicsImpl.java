@@ -1,6 +1,5 @@
 package a05.e2;
 
-import java.util.Optional;
 import java.util.Random;
 
 public class LogicsImpl implements Logics {
@@ -35,30 +34,48 @@ public class LogicsImpl implements Logics {
             if (player.equals(computer)) {
                 this.quit = true;
             }
-            moveComputer();
+            if (isAttacked()) {
+                moveComputer();
+            }
         }
     }
 
     private void moveComputer() {
-        Random r = new Random();
-        int x = r.nextInt(2);
-        int y = r.nextInt(2);
-        int segno = r.nextInt(2);
-        if (segno == 0) {
-            if (computer.x() + x >= 0 && computer.x() + x < size && computer.y() + y >= 0 && computer.y() + y < size) {
-                computer = new Position(computer.x() + x, computer.y() + y);
+        if (!isAtBorder()) {
+            Random r = new Random();
+            int x = r.nextInt(2);
+            int y = r.nextInt(2);
+            int segno = r.nextInt(2);
+            if (segno == 0) {
+                if (computer.x() + x >= 0 && computer.x() + x < size && computer.y() + y >= 0
+                        && computer.y() + y < size) {
+                    computer = new Position(computer.x() + x, computer.y() + y);
+                }
+            }
+            if (segno == 1) {
+                if (computer.x() - x >= 0 && computer.x() - x < size && computer.y() - y >= 0
+                        && computer.y() - y < size) {
+                    computer = new Position(computer.x() - x, computer.y() - y);
+                }
             }
         }
-        if (segno == 1) {
-            if (computer.x() - x >= 0 && computer.x() - x < size && computer.y() - y >= 0 && computer.y() - y < size) {
-                computer = new Position(computer.x() - x, computer.y() - y);
-            }
-        }
+
     }
 
     @Override
     public boolean toQuit() {
         return this.quit;
+    }
+
+    private boolean isAttacked() {
+        return Adjacent(computer, player);
+    }
+
+    private boolean isAtBorder() {
+        if (computer.x() == 0 || computer.x() == size - 1 || computer.y() == 0 || computer.y() == size - 1) {
+            return true;
+        }
+        return false;
     }
 
 }

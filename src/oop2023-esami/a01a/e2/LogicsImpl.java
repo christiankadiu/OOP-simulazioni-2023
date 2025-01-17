@@ -1,6 +1,7 @@
 package a01a.e2;
 
 import java.util.List;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -10,6 +11,7 @@ public class LogicsImpl implements Logics {
 
     int size;
     List<Pair<Integer, Integer>> set;
+    boolean quit = false;
 
     LogicsImpl(int size) {
         this.size = size;
@@ -17,15 +19,13 @@ public class LogicsImpl implements Logics {
     }
 
     @Override
-    public boolean hit(Pair<Integer, Integer> pos) {
+    public void hit(Pair<Integer, Integer> pos) {
         if (isValid(pos) && !this.set.contains(pos)) {
             this.set.add(pos);
-            return true;
         }
         if (!this.set.contains(pos)) {
             move();
         }
-        return false;
     }
 
     private boolean isValid(Pair<Integer, Integer> p) {
@@ -66,6 +66,11 @@ public class LogicsImpl implements Logics {
             System.out.print(pair + "\t");
         }
         System.out.println();
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getNumbers() {
+        return this.set;
     }
 
 }

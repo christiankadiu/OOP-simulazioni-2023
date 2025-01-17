@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 public class GUI extends JFrame {
 
     private static final long serialVersionUID = -6218820567019985015L;
-    private final Map<JButton, Pair<Integer, Integer>> cells = new HashMap<>();
+    private final Map<Pair<Integer, Integer>, JButton> cells = new HashMap<>();
     Logics logic;
     int count = 0;
 
@@ -22,19 +22,21 @@ public class GUI extends JFrame {
 
         ActionListener al = e -> {
             var jb = (JButton) e.getSource();
-            Pair<Integer, Integer> pos = cells.get(jb);
-            if (logic.hit(pos)) {
-                jb.setText("" + count++);
-            } else {
-                draw();
+            Pair<Integer, Integer> pos = new Pair<Integer, Integer>(null, null);
+            for (Map.Entry<Pair<Integer, Integer>, JButton> entry : cells.entrySet()) {
+                if (entry.getValue().equals(jb)) {
+                    pos = entry.getKey();
+                }
             }
+            logic.hit(pos);
+            draw();
         };
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 var pos = new Pair<>(j, i);
                 final JButton jb = new JButton();
-                this.cells.put(jb, new Pair<Integer, Integer>(i, j));
+                this.cells.put(pos, jb);
                 jb.addActionListener(al);
                 panel.add(jb);
             }
@@ -44,13 +46,11 @@ public class GUI extends JFrame {
 
     private void draw() {
         int c = 0;
-        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
-            entry.getKey().setText("");
+        for (Map.Entry<Pair<Integer, Integer>, JButton> entry : cells.entrySet()) {
+            entry.getValue().setText("");
         }
-        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
-            if (logic.isPresent(entry.getValue())) {
-                entry.getKey().setText("" + c++);
-            }
+        for (Pair<Integer, Integer> p : logic.getNumbers()) {
+            cells.get(p).setText("" + c++);
         }
     }
 

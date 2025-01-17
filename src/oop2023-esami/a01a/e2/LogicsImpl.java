@@ -18,10 +18,9 @@ public class LogicsImpl implements Logics {
 
     @Override
     public void hit(Pair<Integer, Integer> pos) {
-        if (isValid(pos) && !this.set.contains(pos)) {
+        if (isValid(pos)) {
             this.set.add(pos);
-        }
-        if (!this.set.contains(pos)) {
+        } else {
             move();
         }
     }
@@ -39,11 +38,11 @@ public class LogicsImpl implements Logics {
         List<Pair<Integer, Integer>> list = new ArrayList<>();
         for (int dx = -1; dx <= 1; dx++) {
             for (int dy = -1; dy <= 1; dy++) {
-                if (dx != 0 && dy != 0) {
+                if (!(dx == 0 && dy == 0)) {
                     int newX = pos.getX() + dx;
                     int newY = pos.getY() + dy;
                     if (newX >= 0 && newX < size && newY >= 0 && newY < size) {
-                        list.add(new Pair<Integer, Integer>(newX, newY));
+                        list.add(new Pair<>(newX, newY));
                     }
                 }
             }
@@ -52,9 +51,13 @@ public class LogicsImpl implements Logics {
     }
 
     private void move() {
-        this.set = new ArrayList<>(this.set.stream().map(pair -> new Pair<>(pair.getX() - 1, pair.getY() + 1))
+        this.set = new ArrayList<>(this.set.stream().map(pair -> new Pair<>(pair.getX() + 1, pair.getY() - 1))
                 .collect(Collectors.toList()));
-        print();
+        for (Pair<Integer, Integer> pair : set) {
+            if (pair.getX() < 0 || pair.getX() >= size || pair.getY() < 0 || pair.getY() >= size) {
+                this.quit = true;
+            }
+        }
     }
 
     @Override
@@ -72,6 +75,11 @@ public class LogicsImpl implements Logics {
     @Override
     public List<Pair<Integer, Integer>> getNumbers() {
         return this.set;
+    }
+
+    @Override
+    public boolean toQuit() {
+        return this.quit;
     }
 
 }

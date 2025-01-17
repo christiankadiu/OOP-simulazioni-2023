@@ -28,7 +28,11 @@ public class GUI extends JFrame {
                 }
             }
             logic.hit(pos);
-            draw();
+            if (logic.toQuit()) {
+                System.exit(0);
+            } else {
+                draw();
+            }
         };
 
         for (int i = 0; i < size; i++) {

@@ -10,4 +10,6 @@ public interface Logics {
 
     List<Pair<Integer, Integer>> getNumbers();
 
+    boolean toQuit();
+
 }

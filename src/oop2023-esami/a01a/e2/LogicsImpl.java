@@ -1,7 +1,6 @@
 package a01a.e2;
 
 import java.util.List;
-import java.beans.IntrospectionException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
@@ -58,18 +57,6 @@ public class LogicsImpl implements Logics {
                 this.quit = true;
             }
         }
-    }
-
-    @Override
-    public boolean isPresent(Pair<Integer, Integer> value) {
-        return this.set.contains(value);
-    }
-
-    private void print() {
-        for (Pair<Integer, Integer> pair : set) {
-            System.out.print(pair + "\t");
-        }
-        System.out.println();
     }
 
     @Override

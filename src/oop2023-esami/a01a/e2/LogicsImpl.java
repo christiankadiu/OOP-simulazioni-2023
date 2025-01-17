@@ -1,10 +1,8 @@
 package a01a.e2;
 
 import java.util.List;
-import java.awt.Component;
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class LogicsImpl implements Logics {
@@ -39,14 +37,17 @@ public class LogicsImpl implements Logics {
 
     private List<Pair<Integer, Integer>> Adjacent(Pair<Integer, Integer> pos) {
         List<Pair<Integer, Integer>> list = new ArrayList<>();
-        for (int i = pos.getX() - 1; i <= pos.getX() + 1; i++) {
-            list.add(new Pair<Integer, Integer>(i, pos.getY() + 1));
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dy = -1; dy <= 1; dy++) {
+                if (dx != 0 && dy != 0) {
+                    int newX = pos.getX() + dx;
+                    int newY = pos.getY() + dy;
+                    if (newX >= 0 && newX < size && newY >= 0 && newY < size) {
+                        list.add(new Pair<Integer, Integer>(newX, newY));
+                    }
+                }
+            }
         }
-        for (int i = pos.getX() - 1; i <= pos.getX() + 1; i++) {
-            list.add(new Pair<Integer, Integer>(i, pos.getY() - 1));
-        }
-        list.add(new Pair<Integer, Integer>(pos.getX(), pos.getY() + 1));
-        list.add(new Pair<Integer, Integer>(pos.getX(), pos.getY() - 1));
         return list;
     }
 

@@ -10,7 +10,6 @@ public class GUI extends JFrame {
     private static final long serialVersionUID = -6218820567019985015L;
     private final Map<Pair<Integer, Integer>, JButton> cells = new HashMap<>();
     Logics logic;
-    int count = 0;
 
     public GUI(int size) {
         logic = new LogicsImpl(size);

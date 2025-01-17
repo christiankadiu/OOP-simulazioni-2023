@@ -1,6 +1,5 @@
 package a01a.e2;
 
-import java.awt.Component;
 import java.util.List;
 
 public interface Logics {

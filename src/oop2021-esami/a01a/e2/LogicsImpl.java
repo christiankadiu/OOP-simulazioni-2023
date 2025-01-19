@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 
 public class LogicsImpl implements Logics {
 
-    int size;
-    Optional<Pair<Integer, Integer>> current;
-    Set<Pair<Integer, Integer>> set;
+    private int size;
+    private Optional<Pair<Integer, Integer>> current;
+    private Set<Pair<Integer, Integer>> set;
 
     LogicsImpl(int size) {
         this.size = size;

@@ -83,8 +83,24 @@ public class LensFactoryImpl implements LensFactory {
 
     @Override
     public <A, B, C> Lens<List<Pair<A, Pair<B, C>>>, C> rightRightAtPos(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'rightRightAtPos'");
+        return new Lens<List<Pair<A, Pair<B, C>>>, C>() {
+
+            @Override
+            public C get(List<Pair<A, Pair<B, C>>> s) {
+                return s.get(i).get2().get2();
+            }
+
+            @Override
+            public List<Pair<A, Pair<B, C>>> set(C a, List<Pair<A, Pair<B, C>>> s) {
+                List<Pair<A, Pair<B, C>>> list = new ArrayList<>();
+                for (Pair<A, Pair<B, C>> pair : s) {
+                    list.add(new Pair<A, Pair<B, C>>(pair.get1(), pair.get2()));
+                }
+                list.set(i, new Pair<A, Pair<B, C>>(list.get(i).get1(), new Pair<B, C>(list.get(i).get2().get1(), a)));
+                return list;
+            }
+
+        };
     }
 
 }

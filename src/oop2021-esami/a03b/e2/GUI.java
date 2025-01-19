@@ -42,7 +42,7 @@ public class GUI extends JFrame {
 
     private void draw() {
         for (Position pos : logic.getPositons()) {
-            cells.get(pos).setText("" + count++);
+            cells.get(pos).setText("*");
         }
     }
 

@@ -24,23 +24,23 @@ public class LogicsImpl implements Logics{
     }
 
     @Override
-    public void hit(Position pos) {
+    public boolean hit(Position pos) {
         if (sx.isEmpty()){
             sx = Optional.ofNullable(pos);
             set.add(sx.get());
-            return;
+            return true;
         }
         if (dx.isEmpty()){
             dx = Optional.ofNullable(pos);
             set.add(dx.get());
-            return;
+            return true;
         }
         if (this.set.size() == 2){
             drawRectangle();
-            return;
+            return false;
         }
         expand();
-        
+        return false;
     }
 
     private void drawRectangle(){

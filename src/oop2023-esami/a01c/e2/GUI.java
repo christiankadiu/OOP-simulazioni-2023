@@ -10,6 +10,7 @@ public class GUI extends JFrame {
     private static final long serialVersionUID = -6218820567019985015L;
     private final Map<JButton, Position> cells = new HashMap<>();
     Logics logic;
+    int count = 1;
     
     public GUI(int size) {
         logic = new LogicsImpl(size);
@@ -22,8 +23,11 @@ public class GUI extends JFrame {
         ActionListener al = e -> {
             var jb = (JButton)e.getSource();
             Position pos = cells.get(jb);
-            logic.hit(pos);
-            draw();
+            if (logic.hit(pos)){
+                jb.setText(""+count++);
+            }else{
+                draw();
+            }
         };
                 
         for (int i=0; i<size; i++){
@@ -41,7 +45,9 @@ public class GUI extends JFrame {
     private void draw(){
         for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
             if (logic.isPresent(entry.getValue())){
-                entry.getKey().setText("*");
+                if (!(entry.getKey().getText().equals("1") || entry.getKey().getText().equals("2"))){
+                    entry.getKey().setText("0");
+                }
             }
         }
     }

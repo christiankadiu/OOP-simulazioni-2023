@@ -30,7 +30,7 @@ public class GUI extends JFrame {
             logic.hit(pos);
             draw();
             if (logic.toQuit()){
-                System.out.println("ciao bro");
+                System.exit(0);
             }
         };
                 

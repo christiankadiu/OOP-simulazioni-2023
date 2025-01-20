@@ -74,4 +74,9 @@ public class LogicsImpl implements Logics{
     public boolean isPresent(Position value) {
         return this.set.contains(value);
     }
+
+    @Override
+    public boolean toQuit() {
+        return this.set.size() == this.matrice.size();
+    }
 }

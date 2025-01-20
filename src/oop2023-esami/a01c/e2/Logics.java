@@ -6,4 +6,6 @@ public interface Logics {
 
     boolean isPresent(Position value);
 
+    boolean toQuit();
+
 }

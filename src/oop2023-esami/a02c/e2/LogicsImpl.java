@@ -31,6 +31,7 @@ public class LogicsImpl implements Logics {
             create(center.get());
             return;
         }
+
     }
 
     private void create(Position c) {

@@ -21,6 +21,7 @@ public class LogicsImpl implements Logics{
     private List<Position> list;
     private int count = 0;
     direction dir = direction.LEFT;
+    private boolean quit = false;
     
 
     LogicsImpl(final int size){
@@ -38,11 +39,28 @@ public class LogicsImpl implements Logics{
     }
 
     private void move(){
-        this.list = new ArrayList<Position>(this.list.stream().map(i -> new Position(i.x() + dir.x, i.y() + dir.y)).toList());
+        for (int i = 0; i < this.list.size(); i++){
+            if (list.get(i).x() + dir.x >= 0 && list.get(i).x() + dir.x < size){
+                this.list.set(i, new Position(list.get(i).x() + dir.x, list.get(i).y() + dir.y));
+            }
+        }
+        if (this.list.stream().anyMatch(i -> i.x() == size - 1) && dir.equals(direction.RIGHT)){
+            quit = true;
+            return;
+        }
+        if (this.list.stream().anyMatch(i -> i.x() == 0)){
+            dir = direction.RIGHT;
+        }
     }
 
     @Override
     public List<Position> get() {
         return this.list;
+    }
+
+
+    @Override
+    public boolean toQuit() {
+        return this.quit;
     }
 }

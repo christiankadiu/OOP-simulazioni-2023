@@ -8,4 +8,6 @@ public interface Logics {
 
     List<Position> get();
 
+    boolean toQuit();
+
 }

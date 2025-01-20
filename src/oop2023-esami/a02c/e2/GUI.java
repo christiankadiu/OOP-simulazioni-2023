@@ -1,6 +1,7 @@
 package a02c.e2;
 
 import javax.swing.*;
+
 import java.util.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -39,6 +40,9 @@ public class GUI extends JFrame {
     }
 
     private void draw() {
+        for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
+            entry.getKey().setText("");
+        }
         for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
             if (logic.isPresent(entry.getValue())) {
                 entry.getKey().setText("*");

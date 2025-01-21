@@ -1,74 +1,77 @@
 package a02a.e1;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ListBuilderFactoryImpl implements ListBuilderFactory{
 
-    private <R,T> ListBuilder<R> flatMap(ListBuilder<T> lb, Function<T, ListBuilder<R>> fun){
-        return new ListBuilderImpl<>(lb.build().stream().flatMap(t -> fun.apply(t).build().stream()));
-    }
-
-    private class ListBuilderImpl<T> implements ListBuilder<T>{
-
-        private List<T> lista;
-
-        public ListBuilderImpl(Stream<T> stream){
-            lista = stream.toList();
-        }
-
-        @Override
-        public ListBuilder<T> add(List<T> list) {
-            return new ListBuilderImpl<>(Stream.concat(this.lista.stream(), list.stream()));
-        }
-
-        @Override
-        public ListBuilder<T> concat(ListBuilder<T> lb) {
-            return add(lb.build());
-        }
-
-        @Override
-        public ListBuilder<T> replaceAll(T t, ListBuilder<T> lb) {
-            return flatMap(this, tt -> tt.equals(t) ? lb : fromElement(t));
-        }
-
-        @Override
-        public ListBuilder<T> reverse() {
-            var l = new ArrayList<>(lista);
-            Collections.reverse(l);
-            return new ListBuilderImpl<>(l.stream());
-        }
-
-        @Override
-        public List<T> build() {
-            return this.lista;
-        }
-
-    }
-
     @Override
     public <T> ListBuilder<T> empty() {
-        return new ListBuilderImpl<>(Stream.empty());
+        return (ListBuilder<T>) fromList(Stream.of().toList());
     }
 
     @Override
     public <T> ListBuilder<T> fromElement(T t) {
-        return new ListBuilderImpl<>(Stream.of(t));
+        return fromList(Stream.of(t).toList());
     }
 
-    @Override
     public <T> ListBuilder<T> fromList(List<T> list) {
-        return new ListBuilderImpl<>(list.stream());
-    }
+        return new ListBuilder<T>() {
 
+            List<T> l = new ArrayList<>(list);
+
+            @Override
+            public ListBuilder<T> add(List<T> list) {
+                return fromList(Stream.concat(l.stream(), list.stream()).toList());
+            }
+
+            @Override
+            public ListBuilder<T> concat(ListBuilder<T> lb) {
+                return add(lb.build());
+            }
+
+            @Override
+            public ListBuilder<T> replaceAll(T t, ListBuilder<T> lb) {
+                for (int i = 0; i < l.size(); i++){
+                    if (l.get(i).equals(t)){
+                        l = modify(l, lb.build(), i);
+                    }
+                }
+                return fromList(l);
+            }
+
+            private List<T> modify(List<T> input, List<T> target, int index){
+                input.addAll(index, target);
+                input.remove(index + target.size());
+                return input;
+            }
+
+            @Override
+            public ListBuilder<T> reverse() {
+                var l2 = new ArrayList<>(l);
+                Collections.reverse(l2);
+                return fromList(l2);
+            }
+
+            @Override
+            public List<T> build() {
+                return this.l;
+            }
+            
+        };
+    }
+    
     @Override
     public <T> ListBuilder<T> join(T start, T stop, List<ListBuilder<T>> builderList) {
-        return null;
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'join'");
     }
 
-
+    
     
 }

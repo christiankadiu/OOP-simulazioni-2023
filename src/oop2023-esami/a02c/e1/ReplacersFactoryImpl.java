@@ -11,9 +11,9 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
 
             @Override
             public List<List<T>> replace(List<T> input, T t) {
-                return new ArrayList<>();
+                return List.of();
             }
-
+            
         };
     }
 
@@ -23,28 +23,16 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
 
             @Override
             public List<List<T>> replace(List<T> input, T t) {
-                List<List<T>> out = new ArrayList<>();
-                for (int i = 0; i < input.size(); i++) {
-                    if (input.get(i).equals(t)) {
-                        List<T> tmp = new ArrayList<>(input);
-                        tmp.add(i, t);
-                        out.add(tmp);
-                        break;
-                    }
+                List<T> list = new ArrayList<>(input);
+                int i = list.indexOf(t);
+                if (i != -1){
+                    list.add(i, t);
+                    return List.of(list);
                 }
-                return out;
+                return List.of();
             }
-
+            
         };
-    }
-
-    private <T> List<T> modify(List<T> input, List<T> target, int i) {
-        if (i != -1) {
-            input.addAll(i, target);
-            input.remove(i + target.size());
-            return input;
-        }
-        return List.of(); // i == -1 vuol dire che l'elemento non c'è
     }
 
     @Override
@@ -53,45 +41,39 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
 
             @Override
             public List<List<T>> replace(List<T> input, T t) {
-                List<List<T>> out = new ArrayList<>();
-                int index = input.lastIndexOf(t);
-                List<T> tmp = new ArrayList<>(input);
-                List<T> tmp2 = modify(tmp, target, index);
-                if (!tmp2.isEmpty()) {
-                    out.add(tmp2);
+                List<T> list = new ArrayList<>(input);
+                int index = list.lastIndexOf(t);
+                if (index != -1){
+                    list.addAll(index, target);
+                    list.remove(index + target.size());
+                    return List.of(list);
                 }
-                return out;
+                return List.of();
             }
+            
         };
-    }
-
-    private <T> List<T> added(List<T> input, int index) {
-        input.remove(index);
-        return input;
     }
 
     @Override
     public <T> Replacer<T> removeEach() {
         return new Replacer<T>() {
 
-            int prec = 0;
-
             @Override
             public List<List<T>> replace(List<T> input, T t) {
                 List<List<T>> out = new ArrayList<>();
-                for (int i = 0; i < input.size(); i++) {
-                    if (input.get(i).equals(t)) {
-                        if (i > prec || i == 0) {
-                            prec = i;
-                            List<T> tmp = new ArrayList<>(input);
-                            out.add(added(tmp, i));
-                        }
+                for (int i = 0; i < input.size(); i++){
+                    if (input.get(i).equals(t)){
+                        out.add(modify(new ArrayList<>(input), i));
                     }
                 }
                 return out;
-            }
-
+             }
         };
+    }
+
+    private <T> List<T> modify(List<T> input, int i){
+        input.remove(i);
+        return input;
     }
 
     @Override
@@ -99,5 +81,7 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'replaceEachFromSequence'");
     }
+
+    
 
 }

@@ -2,10 +2,10 @@ package a03a.e2;
 
 public interface Logics {
 
-    boolean get(Pair<Integer, Integer> pos);
+    int get(Position value);
 
-    void hit(Pair<Integer, Integer> pos);
+    void hit(Position pos);
 
-    boolean isPresent(Pair<Integer, Integer> value);
+    boolean toQuit();
 
 }

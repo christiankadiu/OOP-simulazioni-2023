@@ -1,44 +1,50 @@
 package a03b.e2;
 
 import java.util.HashSet;
-import java.util.Optional;
+import java.util.Random;
 import java.util.Set;
+
 
 public class LogicsImpl implements Logics {
 
-    int width;
-    int height;
-    Optional<Pair<Integer, Integer>> inizio = Optional.empty();
-    Set<Pair<Integer, Integer>> punti;
+    private final int width;
+    private final int height;
+    private final Position target;
+    Set<Position> set;
 
-    LogicsImpl(int width, int height) {
+    LogicsImpl(final int width, final int height){
         this.width = width;
         this.height = height;
-        punti = new HashSet<>();
+        Random r = new Random();
+        target = new Position(r.nextInt(width), r.nextInt(height));
+        this.set = new HashSet<>();
     }
 
     @Override
-    public boolean hit(Pair<Integer, Integer> pos) {
-        if (inizio.isEmpty()) {
-            inizio = Optional.ofNullable(pos);
-            return true;
-        }
+    public void hit(Position pos) {
         compose(pos);
-        return false;
     }
 
-    private void compose(Pair<Integer, Integer> pos) {
-        this.punti.add(pos);
-        while (pos.getX() != inizio.get().getX() || pos.getX() != this.width) {
-            pos = new Pair<Integer, Integer>(pos.getX() + 1, pos.getY());
-            for (int i = pos.getY() - 1; i <= pos.getY() + 1; i++) {
-                this.punti.add(new Pair<Integer, Integer>(pos.getX(), i));
+    @Override
+    public int get(Position value) {
+        return value.equals(target) == true ? 1 : this.set.contains(value) == true ? 2 : 0;
+    }
+
+    private void compose(Position pos){
+        int c = 0;
+        for(int x = pos.x(); x < width; x++){
+            if (pos.y() - c >= 0 && pos.y() + c < height){
+                for (int k = pos.y() - c; k <= pos.y() + c; k++){
+                    this.set.add(new Position(x, k));
+                }
             }
+            c++;
         }
     }
 
     @Override
-    public boolean isPresent(Pair<Integer, Integer> value) {
-        return this.punti.contains(value);
+    public boolean toQuit() {
+        return this.set.contains(target);
     }
+
 }

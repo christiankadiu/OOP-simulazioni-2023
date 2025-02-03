@@ -75,8 +75,6 @@ public class ListExtractorFactoryImpl implements ListExtractorFactory {
 
             @Override
             public Integer extract(List<X> list) {
-                int count = 0;
-                boolean p = false;
                 int index = list.indexOf(x);
                 if (index != -1) {
                     return conteggio(list, index, x);

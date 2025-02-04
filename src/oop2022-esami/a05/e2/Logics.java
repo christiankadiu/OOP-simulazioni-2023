@@ -8,4 +8,6 @@ public interface Logics {
 
     void hit(Position pos);
 
+    boolean toQuit();
+
 }

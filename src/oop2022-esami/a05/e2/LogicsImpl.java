@@ -9,7 +9,7 @@ public class LogicsImpl implements Logics {
     Position computer;
     Position player;
     Set<Position> matrix;
-    boolean quit;
+    boolean quit = false;;
 
     LogicsImpl(int size) {
         this.size = size;
@@ -55,46 +55,49 @@ public class LogicsImpl implements Logics {
 
     @Override
     public void hit(Position pos) {
-        if (pos.y() == player.y() - 1 && this.matrix.contains(pos)){
+        if (pos.y() == player.y() - 1 && this.matrix.contains(pos)) {
             player = pos;
-            if (player.equals(computer) || player.y() == 0){
+            if (player.equals(computer) || player.y() == 0) {
                 System.out.println("you won");
                 this.quit = true;
-            }else{
+            } else {
                 moveComputer();
             }
         }
     }
 
-    private boolean isValid(Position pos) {
-        if (pos.y() == player.y() - 1 && (pos.x() == player.x() - 1 || pos.x() == player.x() + 1)){
-            return true;
-        }
-        return false;
-    }
-
-    private void moveComputer(){
+    private void moveComputer() {
         Random r = new Random();
-        if (areAdjacent(player, computer) || computer.y() == size - 1){
+        int x = 0;
+        if (areAdjacent(player, computer)) {
             System.out.println("you lost");
-        }else{
-            do{
-                int segno = r.nextInt(1);
-            int x;
-            if (segno == 0){
+            this.quit = true;
+        } else {
+            int segno = r.nextInt(1);
+            if (segno == 0 && computer.x() - 1 >= 0 && computer.x() - 1 < size) {
                 x = computer.x() - 1;
-            }else{
-                x = computer.x() + 1;
+            } else {
+                if (computer.x() + 1 >= 0 && computer.x() + 1 < size) {
+                    x = computer.x() + 1;
+                }
             }
             computer = new Position(x, computer.y() + 1);
-            }while(computer.x() >= size || computer.x() < 0);
+            if (computer.y() == size - 1) {
+                System.out.println("you lost");
+                this.quit = true;
+            }
         }
     }
 
     private boolean areAdjacent(Position player2, Position computer2) {
-        if (Math.abs(player.x() - computer.x()) <= 1 && Math.abs(player.y() - computer.y()) <= 1){
+        if (Math.abs(player.x() - computer.x()) <= 1 && Math.abs(player.y() - computer.y()) <= 1) {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean toQuit() {
+        return this.quit;
     }
 }

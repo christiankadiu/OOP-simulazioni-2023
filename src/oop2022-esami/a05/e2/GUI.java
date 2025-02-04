@@ -24,6 +24,10 @@ public class GUI extends JFrame {
                 var position = cells.get(button);
                 logic.hit(position);
                 draw();
+                if (logic.toQuit()) {
+                    logic = new LogicsImpl(size);
+                    draw();
+                }
             }
         };
 

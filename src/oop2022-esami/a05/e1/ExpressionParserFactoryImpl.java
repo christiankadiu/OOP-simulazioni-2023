@@ -5,37 +5,53 @@ public class ExpressionParserFactoryImpl implements ExpressionParserFactory {
     @Override
     public ExpressionParser oneSum() {
         return new ExpressionParser() {
-            int current = 0;
+
+            boolean lastIsNumber = false;
+            boolean isSum = true;
+            boolean openPar = true;
+            int c = 0;
 
             @Override
             public void acceptNumber(int n) {
-                if (this.current % 2 != 0 || this.current > 2) {
+                if (lastIsNumber || c >= 2) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = true;
+                if (isSum) {
+                    isSum = false;
+                }
+                c++;
             }
 
             @Override
             public void acceptSum() {
-                if (this.current % 2 == 0 || this.current > 2) {
+                if (!lastIsNumber || c >= 2) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = false;
+                isSum = true;
             }
 
             @Override
             public void acceptOpenParen() {
-                throw new IllegalStateException();
+                if (lastIsNumber || isSum || c >= 2) {
+                    throw new IllegalStateException();
+                }
+                lastIsNumber = true;
+                openPar = true;
             }
 
             @Override
             public void acceptCloseParen() {
-                throw new IllegalStateException();
+                if (!lastIsNumber || openPar) {
+                    throw new IllegalStateException();
+                }
+                lastIsNumber = false;
             }
 
             @Override
             public void close() {
-                if (this.current % 2 == 0 || this.current == 0) {
+                if (!lastIsNumber) {
                     throw new IllegalStateException();
                 }
             }
@@ -46,37 +62,51 @@ public class ExpressionParserFactoryImpl implements ExpressionParserFactory {
     @Override
     public ExpressionParser zeroOrManySums() {
         return new ExpressionParser() {
-            int current = 0;
+
+            boolean lastIsNumber = false;
+            boolean isSum = true;
+            boolean openPar = true;
 
             @Override
             public void acceptNumber(int n) {
-                if (this.current % 2 != 0) {
+                if (lastIsNumber) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = true;
+                if (isSum) {
+                    isSum = false;
+                }
             }
 
             @Override
             public void acceptSum() {
-                if (this.current % 2 == 0) {
+                if (!lastIsNumber) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = false;
+                isSum = true;
             }
 
             @Override
             public void acceptOpenParen() {
-                throw new IllegalStateException();
+                if (lastIsNumber || isSum) {
+                    throw new IllegalStateException();
+                }
+                lastIsNumber = true;
+                openPar = true;
             }
 
             @Override
             public void acceptCloseParen() {
-                throw new IllegalStateException();
+                if (!lastIsNumber || openPar) {
+                    throw new IllegalStateException();
+                }
+                lastIsNumber = false;
             }
 
             @Override
             public void close() {
-                if (this.current % 2 == 0 || this.current == 0) {
+                if (!lastIsNumber) {
                     throw new IllegalStateException();
                 }
             }
@@ -87,44 +117,46 @@ public class ExpressionParserFactoryImpl implements ExpressionParserFactory {
     @Override
     public ExpressionParser oneLevelParens() {
         return new ExpressionParser() {
-            int current = 0;
-            boolean par = true;
+
+            boolean lastIsNumber = false;
+            boolean lastIsPar = false;
 
             @Override
             public void acceptNumber(int n) {
-                if (this.current % 2 != 0) {
+                if (lastIsNumber) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = true;
             }
 
             @Override
             public void acceptSum() {
-                if (this.current % 2 == 0) {
+                if (!lastIsNumber) {
                     throw new IllegalStateException();
                 }
-                this.current++;
+                lastIsNumber = false;
             }
 
             @Override
             public void acceptOpenParen() {
-                if (!par) {
+                if (lastIsNumber || lastIsPar) {
                     throw new IllegalStateException();
                 }
-                par = false;
+                lastIsNumber = false;
+                lastIsPar = true;
             }
 
             @Override
             public void acceptCloseParen() {
-                if (par || this.current % 2 == 0) {
+                if (!lastIsNumber) {
                     throw new IllegalStateException();
                 }
-                par = true;
+                lastIsPar = false;
             }
 
             @Override
             public void close() {
-                if (this.current == 0 || !this.par) {
+                if (!lastIsNumber || lastIsPar) {
                     throw new IllegalStateException();
                 }
             }

@@ -4,25 +4,22 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
-
 public class LogicsImpl implements Logics {
 
-    private final int width;
-    private final int height;
-    private final Position target;
+    int width;
+    int height;
+    Position target;
     Set<Position> set;
+    boolean quit = false;
 
-    LogicsImpl(final int width, final int height){
-        this.width = width;
-        this.height = height;
+    LogicsImpl(int width, int height) {
         Random r = new Random();
-        target = new Position(r.nextInt(width), r.nextInt(height));
+        this.height = height;
+        this.width = width;
+        target = new Position(width - 1, r.nextInt(height));
         this.set = new HashSet<>();
-    }
-
-    @Override
-    public void hit(Position pos) {
-        compose(pos);
+        System.out.println("width" + width);
+        System.out.println("height" + height);
     }
 
     @Override
@@ -30,21 +27,33 @@ public class LogicsImpl implements Logics {
         return value.equals(target) == true ? 1 : this.set.contains(value) == true ? 2 : 0;
     }
 
-    private void compose(Position pos){
+    @Override
+    public void hit(Position pos) {
+        boolean q = false;
         int c = 0;
-        for(int x = pos.x(); x < width; x++){
-            if (pos.y() - c >= 0 && pos.y() + c < height){
-                for (int k = pos.y() - c; k <= pos.y() + c; k++){
-                    this.set.add(new Position(x, k));
+        for (int x = pos.x(); x < width; x++) {
+            q = false;
+            for (int y = pos.y() - c; y <= pos.y() + c; y++) {
+                if (y < height && y >= 0) {
+                    this.set.add(new Position(x, y));
+                    if (y == 0 || y == height - 1) {
+                        q = true;
+                    }
                 }
             }
+            if (q) {
+                break;
+            }
             c++;
+        }
+        if (this.set.contains(target)) {
+            quit = true;
         }
     }
 
     @Override
     public boolean toQuit() {
-        return this.set.contains(target);
+        return this.quit;
     }
 
 }

@@ -24,15 +24,15 @@ public class GUI extends JFrame {
             Position pos = cells.get(jb);
             logic.hit(pos);
             draw();
-            if (logic.toQuit()){
-                System.out.println("hai perso bro");
+            if (logic.toQuit()) {
+                System.out.println("you won");
             }
         };
 
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 var pos = new Position(j, i);
-                final JButton jb = new JButton();
+                final JButton jb = new JButton(pos.toString());
                 this.cells.put(jb, pos);
                 jb.addActionListener(al);
                 panel.add(jb);
@@ -42,9 +42,11 @@ public class GUI extends JFrame {
         this.setVisible(true);
     }
 
-    private void draw(){
+    private void draw() {
         for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
-            entry.getKey().setText(logic.get(entry.getValue()) == 1 ? "O" : logic.get(entry.getValue()) == 2 ? "*" : "");
+            entry.getKey()
+                    .setText(logic.get(entry.getValue()) == 1 ? "O" : logic.get(entry.getValue()) == 2 ? "*" : "");
         }
     }
+
 }

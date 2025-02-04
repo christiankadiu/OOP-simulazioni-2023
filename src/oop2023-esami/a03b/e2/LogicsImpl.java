@@ -6,13 +6,13 @@ import java.util.Set;
 
 public class LogicsImpl implements Logics {
 
-    int width;
-    int height;
-    Position target;
-    Set<Position> set;
-    boolean quit = false;
+    private int width;
+    private int height;
+    private Position target;
+    private Set<Position> set;
+    private boolean quit = false;
 
-    LogicsImpl(int width, int height) {
+    LogicsImpl(final int width, final int height) {
         Random r = new Random();
         this.height = height;
         this.width = width;

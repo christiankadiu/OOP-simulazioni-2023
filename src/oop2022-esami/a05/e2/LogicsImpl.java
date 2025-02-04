@@ -57,7 +57,7 @@ public class LogicsImpl implements Logics {
     public void hit(Position pos) {
         if (pos.y() == player.y() - 1 && this.matrix.contains(pos)){
             player = pos;
-            if (player.equals(computer)){
+            if (player.equals(computer) || player.y() == 0){
                 System.out.println("you won");
                 this.quit = true;
             }else{
@@ -75,10 +75,11 @@ public class LogicsImpl implements Logics {
 
     private void moveComputer(){
         Random r = new Random();
-        if (areAdjacent(player, computer)){
+        if (areAdjacent(player, computer) || computer.y() == size - 1){
             System.out.println("you lost");
         }else{
-            int segno = r.nextInt(1);
+            do{
+                int segno = r.nextInt(1);
             int x;
             if (segno == 0){
                 x = computer.x() - 1;
@@ -86,6 +87,7 @@ public class LogicsImpl implements Logics {
                 x = computer.x() + 1;
             }
             computer = new Position(x, computer.y() + 1);
+            }while(computer.x() >= size || computer.x() < 0);
         }
     }
 

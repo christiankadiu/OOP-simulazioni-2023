@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 public class GUI extends JFrame {
 
-    private final Map<JButton, Pair<Integer, Integer>> cells = new HashMap<>();
+    private final Map<JButton, Position> cells = new HashMap<>();
     Logics logic;
 
     public GUI(int size) {
@@ -22,60 +22,30 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 var button = (JButton) e.getSource();
                 var position = cells.get(button);
-                logic.hit(position);
-                updateCells();
-                if (logic.toQuit()) {
-                    System.exit(0);
-                }
+                button.setText("" + position);
             }
         };
+
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                final JButton jb = new JButton();
-                Pair<Integer, Integer> pos = new Pair<Integer, Integer>(i, j);
+                final JButton jb = new JButton(" ");
+                Position pos = new Position(j, i);
                 this.cells.put(jb, pos);
                 jb.addActionListener(al);
                 panel.add(jb);
-                if (i % 2 == 0) {
-                    if (j % 2 != 0) {
-                        jb.setEnabled(false);
-                    }
-                } else {
-                    if (j % 2 == 0) {
-                        jb.setEnabled(false);
-                    }
-                }
-
-                if (jb.isEnabled()) {
-                    switch (logic.isSomething(pos)) {
-                        case 0:
-                            jb.setText("");
-                            break;
-                        case 1:
-                            jb.setText("H");
-                            break;
-                        case 2:
-                            jb.setText("C");
-                            break;
-                    }
-                }
             }
         }
+        draw();
         this.setVisible(true);
     }
 
-    void updateCells() {
-        for (Map.Entry<JButton, Pair<Integer, Integer>> entry : cells.entrySet()) {
-            switch (logic.isSomething(entry.getValue())) {
-                case 0:
-                    entry.getKey().setText("");
-                    break;
-                case 1:
-                    entry.getKey().setText("H");
-                    break;
-                case 2:
-                    entry.getKey().setText("C");
-                    break;
+    private void draw() {
+        for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
+            if (logic.isDisabled(entry.getValue())) {
+                entry.getKey().setEnabled(false);
+            } else {
+                entry.getKey()
+                        .setText(logic.get(entry.getValue()) == 1 ? "C" : logic.get(entry.getValue()) == 2 ? "H" : "");
             }
         }
     }

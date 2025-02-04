@@ -5,13 +5,13 @@ import java.util.Random;
 import java.util.Set;
 
 public class LogicsImpl implements Logics {
-    int size;
-    Position computer;
-    Position player;
-    Set<Position> matrix;
-    boolean quit = false;;
+    private int size;
+    private Position computer;
+    private Position player;
+    private Set<Position> matrix;
+    private boolean quit = false;;
 
-    LogicsImpl(int size) {
+    LogicsImpl(final int size) {
         this.size = size;
         Random r = new Random();
         matrix = new HashSet<>();

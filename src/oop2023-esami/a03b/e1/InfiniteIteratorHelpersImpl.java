@@ -1,10 +1,6 @@
 package a03b.e1;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.Iterator;
-import java.util.stream.Stream;
 
 public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
 
@@ -16,7 +12,7 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
             public X nextElement() {
                 return x;
             }
-            
+
         };
     }
 
@@ -25,14 +21,15 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
         return new InfiniteIterator<X>() {
 
             int current = 0;
+
             @Override
             public X nextElement() {
-                if (current == l.size()){
+                if (current == l.size()) {
                     current = 0;
                 }
                 return l.get(current++);
             }
-            
+
         };
     }
 
@@ -44,9 +41,9 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
 
             @Override
             public Integer nextElement() {
-                return start + (current++ * increment);
+                return start + current++ * increment;
             }
-            
+
         };
     }
 
@@ -55,16 +52,17 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
         return new InfiniteIterator<X>() {
 
             boolean p = true;
-            
+
             @Override
             public X nextElement() {
-                if (p){
+                if (p) {
                     p = false;
                     return i.nextElement();
                 }
                 p = true;
                 return j.nextElement();
             }
+
         };
     }
 
@@ -73,7 +71,5 @@ public class InfiniteIteratorHelpersImpl implements InfiniteIteratorsHelpers {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'window'");
     }
-
-    
 
 }

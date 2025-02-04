@@ -6,4 +6,6 @@ public interface Logics {
 
     boolean isDisabled(Position value);
 
+    void hit(Position pos);
+
 }

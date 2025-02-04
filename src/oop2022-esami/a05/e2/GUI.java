@@ -22,7 +22,8 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 var button = (JButton) e.getSource();
                 var position = cells.get(button);
-                button.setText("" + position);
+                logic.hit(position);
+                draw();
             }
         };
 

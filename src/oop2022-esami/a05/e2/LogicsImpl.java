@@ -9,6 +9,7 @@ public class LogicsImpl implements Logics {
     Position computer;
     Position player;
     Set<Position> matrix;
+    boolean quit;
 
     LogicsImpl(int size) {
         this.size = size;
@@ -50,5 +51,48 @@ public class LogicsImpl implements Logics {
     @Override
     public boolean isDisabled(Position value) {
         return !this.matrix.contains(value);
+    }
+
+    @Override
+    public void hit(Position pos) {
+        if (pos.y() == player.y() - 1 && this.matrix.contains(pos)){
+            player = pos;
+            if (player.equals(computer)){
+                System.out.println("you won");
+                this.quit = true;
+            }else{
+                moveComputer();
+            }
+        }
+    }
+
+    private boolean isValid(Position pos) {
+        if (pos.y() == player.y() - 1 && (pos.x() == player.x() - 1 || pos.x() == player.x() + 1)){
+            return true;
+        }
+        return false;
+    }
+
+    private void moveComputer(){
+        Random r = new Random();
+        if (areAdjacent(player, computer)){
+            System.out.println("you lost");
+        }else{
+            int segno = r.nextInt(1);
+            int x;
+            if (segno == 0){
+                x = computer.x() - 1;
+            }else{
+                x = computer.x() + 1;
+            }
+            computer = new Position(x, computer.y() + 1);
+        }
+    }
+
+    private boolean areAdjacent(Position player2, Position computer2) {
+        if (Math.abs(player.x() - computer.x()) <= 1 && Math.abs(player.y() - computer.y()) <= 1){
+            return true;
+        }
+        return false;
     }
 }

@@ -24,6 +24,9 @@ public class GUI extends JFrame {
             Position pos = cells.get(jb);
             logic.hit(pos);
             draw();
+            if (logic.toQuit()) {
+                System.exit(0);
+            }
         };
 
         for (int i = 0; i < size; i++) {

@@ -14,6 +14,7 @@ public class LogicsImpl implements Logics {
     private Set<Position> quad;
     private List<Position> vertexes;
     private Set<Position> matrix;
+    private boolean quit = false;
 
     LogicsImpl(final int size) {
         this.size = size;
@@ -49,21 +50,37 @@ public class LogicsImpl implements Logics {
 
     private void updateVertexes(Position pos) {
         if (pos.equals(vertexes.get(0))) {
+            if (pos.x() - 1 == 0 || pos.y() - 1 == 0) {
+                this.quit = true;
+                return;
+            }
             vertexes.set(0, new Position(pos.x() - 1, pos.y() - 1));
             vertexes.set(1, new Position(vertexes.get(1).x(), vertexes.get(1).y() - 1));
             vertexes.set(3, new Position(vertexes.get(3).x() - 1, vertexes.get(3).y()));
         }
         if (pos.equals(vertexes.get(1))) {
+            if (pos.x() + 1 == 0 || pos.y() - 1 == 0) {
+                this.quit = true;
+                return;
+            }
             vertexes.set(1, new Position(pos.x() + 1, pos.y() - 1));
             vertexes.set(0, new Position(vertexes.get(0).x(), vertexes.get(1).y() - 1));
             vertexes.set(2, new Position(vertexes.get(2).x() + 1, vertexes.get(3).y()));
         }
         if (pos.equals(vertexes.get(2))) {
+            if (pos.x() + 1 == 0 || pos.y() + 1 == 0) {
+                this.quit = true;
+                return;
+            }
             vertexes.set(2, new Position(pos.x() + 1, pos.y() + 1));
             vertexes.set(1, new Position(vertexes.get(1).x() + 1, vertexes.get(1).y()));
             vertexes.set(3, new Position(vertexes.get(3).x(), vertexes.get(3).y() + 1));
         }
         if (pos.equals(vertexes.get(3))) {
+            if (pos.x() - 1 == 0 || pos.y() + 1 == 0) {
+                this.quit = true;
+                return;
+            }
             vertexes.set(3, new Position(pos.x() - 1, pos.y() + 1));
             vertexes.set(0, new Position(vertexes.get(0).x() - 1, vertexes.get(0).y()));
             vertexes.set(2, new Position(vertexes.get(2).x(), vertexes.get(2).y() + 1));
@@ -99,6 +116,11 @@ public class LogicsImpl implements Logics {
     @Override
     public boolean get(Position value) {
         return this.quad.contains(value);
+    }
+
+    @Override
+    public boolean toQuit() {
+        return this.quit;
     }
 
 }

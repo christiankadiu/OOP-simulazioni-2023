@@ -6,4 +6,6 @@ public interface Logics {
 
     boolean get(Position value);
 
+    boolean toQuit();
+
 }

@@ -2,7 +2,6 @@ package a05.e2;
 
 import javax.swing.*;
 import java.util.*;
-import java.util.List;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
@@ -22,11 +21,11 @@ public class GUI extends JFrame {
 
         ActionListener al = e -> {
             var jb = (JButton) e.getSource();
-            var pos = cells.get(jb);
+            Position pos = cells.get(jb);
             logic.hit(pos);
             draw();
             if (logic.toQuit()) {
-                disableAll();
+                System.out.println("you lost");
             }
         };
 
@@ -45,17 +44,13 @@ public class GUI extends JFrame {
 
     private void draw() {
         for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
-            entry.getKey().setText("");
-        }
-        for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
-            entry.getKey().setText(logic.isSomething(entry.getValue()) == 1 ? "P"
-                    : logic.isSomething(entry.getValue()) == 2 ? "E" : "");
-        }
-    }
-
-    private void disableAll() {
-        for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
-            entry.getKey().setEnabled(false);
+            if (logic.get(entry.getValue()) == 1) {
+                entry.getKey().setText("P");
+            } else if (logic.get(entry.getValue()) == 2) {
+                entry.getKey().setText("C");
+            } else {
+                entry.getKey().setText("");
+            }
         }
     }
 

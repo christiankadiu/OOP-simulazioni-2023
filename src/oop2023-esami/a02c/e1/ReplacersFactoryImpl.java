@@ -1,6 +1,7 @@
 package a02c.e1;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class ReplacersFactoryImpl implements ReplacersFactory {
@@ -11,9 +12,9 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
 
             @Override
             public List<List<T>> replace(List<T> input, T t) {
-                return List.of();
+                return new ArrayList<>();
             }
-            
+
         };
     }
 
@@ -24,15 +25,22 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
             @Override
             public List<List<T>> replace(List<T> input, T t) {
                 List<T> list = new ArrayList<>(input);
-                int i = list.indexOf(t);
-                if (i != -1){
-                    list.add(i, t);
-                    return List.of(list);
+                List<List<T>> out = new ArrayList<>();
+                int index = input.indexOf(t);
+                if (index != -1) {
+                    list.add(index, t);
+                    out.add(list);
                 }
-                return List.of();
+                return out;
             }
-            
+
         };
+    }
+
+    private <T> List<T> removeAtPosition(List<T> input, int index) {
+        List<T> out = new ArrayList<>(input);
+        out.remove(index);
+        return out;
     }
 
     @Override
@@ -42,15 +50,16 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
             @Override
             public List<List<T>> replace(List<T> input, T t) {
                 List<T> list = new ArrayList<>(input);
-                int index = list.lastIndexOf(t);
-                if (index != -1){
+                List<List<T>> out = new ArrayList<>();
+                int index = input.lastIndexOf(t);
+                if (index != -1) {
                     list.addAll(index, target);
                     list.remove(index + target.size());
-                    return List.of(list);
+                    out.add(list);
                 }
-                return List.of();
+                return out;
             }
-            
+
         };
     }
 
@@ -60,28 +69,45 @@ public class ReplacersFactoryImpl implements ReplacersFactory {
 
             @Override
             public List<List<T>> replace(List<T> input, T t) {
+                List<T> list = new ArrayList<>(input);
                 List<List<T>> out = new ArrayList<>();
-                for (int i = 0; i < input.size(); i++){
-                    if (input.get(i).equals(t)){
-                        out.add(modify(new ArrayList<>(input), i));
+                for (int i = 0; i < input.size(); i++) {
+                    if (list.get(i).equals(t)) {
+                        out.add(removeAtPosition(list, i));
                     }
                 }
                 return out;
-             }
+            }
+
         };
     }
 
-    private <T> List<T> modify(List<T> input, int i){
-        input.remove(i);
-        return input;
+    private <T> List<T> replaceAtPosition(List<T> input, int index, T target) {
+        List<T> out = new ArrayList<>(input);
+        out.set(index, target);
+        return out;
     }
 
     @Override
     public <T> Replacer<T> replaceEachFromSequence(List<T> sequence) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'replaceEachFromSequence'");
-    }
+        return new Replacer<T>() {
 
-    
+            @Override
+            public List<List<T>> replace(List<T> input, T t) {
+                Iterator<T> it = sequence.iterator();
+                List<T> list = new ArrayList<>(input);
+                List<List<T>> out = new ArrayList<>();
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).equals(t)) {
+                        if (it.hasNext()) {
+                            out.add(replaceAtPosition(list, i, it.next()));
+                        }
+                    }
+                }
+                return out;
+            }
+
+        };
+    }
 
 }

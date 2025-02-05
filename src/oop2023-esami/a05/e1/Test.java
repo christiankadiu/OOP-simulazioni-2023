@@ -6,9 +6,12 @@ public class Test {
 
 	/*
 	 * Implementare l'interfaccia BankAccountFactory come indicato nel metodo
-	 * initFactory qui sotto. Realizza una factory per un concetto di BankAccount classico,
-	 * catturato dall'omonima interfaccia, con metodi balance/deposit/withdraw per accedere/aggiungere/prelevare
-	 * al conto. E' fornita anche una classe astratta AbstractBankAccount, che può semplificare molto l'implementazione
+	 * initFactory qui sotto. Realizza una factory per un concetto di BankAccount
+	 * classico,
+	 * catturato dall'omonima interfaccia, con metodi balance/deposit/withdraw per
+	 * accedere/aggiungere/prelevare
+	 * al conto. E' fornita anche una classe astratta AbstractBankAccount, che può
+	 * semplificare molto l'implementazione
 	 * di qualcuno dei conti correnti richiesti.
 	 * 
 	 * Sono considerati opzionali ai fini della possibilità di correggere
@@ -17,15 +20,18 @@ public class Test {
 	 * 
 	 * - implementazione di tutti i metodi della factory (ossia, nella parte
 	 * obbligatoria è sufficiente implementarli tutti tranne uno a piacimento)
-	 * - la buona progettazione della soluzione, utilizzando ove possibile AbstractBankAccount
-	 * per semplificare l'implementazione: dovrà comunque essere usato almeno una volta!
+	 * - la buona progettazione della soluzione, utilizzando ove possibile
+	 * AbstractBankAccount
+	 * per semplificare l'implementazione: dovrà comunque essere usato almeno una
+	 * volta!
 	 * 
 	 * Si tolga il commento dal metodo initFactory.
 	 * 
 	 * Indicazioni di punteggio:
 	 * - correttezza della parte obbligatoria: 10 punti
 	 * - correttezza della parte opzionale: 3 punti (ulteriore metodo della factory)
-	 * - qualità della soluzione: 4 punti (per uso corretto e completo di AbstractBankAccount)
+	 * - qualità della soluzione: 4 punti (per uso corretto e completo di
+	 * AbstractBankAccount)
 	 * 
 	 */
 
@@ -33,7 +39,7 @@ public class Test {
 
 	@org.junit.Before
 	public void initFactory() {
-		//this.factory = new BankAccountFactoryImpl();
+		this.factory = new BankAccountFactoryImpl();
 	}
 
 	@org.junit.Test
@@ -79,7 +85,8 @@ public class Test {
 		assertTrue(ba.withdraw(200));
 		assertEquals(1000, ba.balance());
 		// fin qui tutto normale
-		// Il tentativo di depositare una cifra negativa blocca il conto e ogni operazione ora è ignorata
+		// Il tentativo di depositare una cifra negativa blocca il conto e ogni
+		// operazione ora è ignorata
 		ba.deposit(-100);
 		assertEquals(1000, ba.balance());
 		ba.deposit(100);
@@ -124,9 +131,9 @@ public class Test {
 		assertEquals(0, ba2.balance());
 		assertEquals(0, ba.balance());
 		ba.deposit(1000); // va su ba1, che ha meno (o uguale)
-		ba.deposit(500);  // va su ba2, che ha meno
-		ba.deposit(600);  // va su ba2, che ha meno
-		ba.deposit(200);  // va su ba1, che ha meno
+		ba.deposit(500); // va su ba2, che ha meno
+		ba.deposit(600); // va su ba2, che ha meno
+		ba.deposit(200); // va su ba1, che ha meno
 		assertEquals(1200, ba1.balance());
 		assertEquals(1100, ba2.balance());
 		assertEquals(2300, ba.balance());

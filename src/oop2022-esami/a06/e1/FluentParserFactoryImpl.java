@@ -3,12 +3,14 @@ package a06.e1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
 
 public class FluentParserFactoryImpl implements FluentParserFactory {
 
     @Override
     public FluentParser<Integer> naturals() {
         return new FluentParser<Integer>() {
+
             int current = 0;
 
             @Override
@@ -18,55 +20,67 @@ public class FluentParserFactoryImpl implements FluentParserFactory {
                 }
                 return this;
             }
+
         };
     }
 
     @Override
     public FluentParser<List<Integer>> incrementalNaturalLists() {
         return new FluentParser<List<Integer>>() {
-            List<Integer> lista = new ArrayList<>();
+
+            List<Integer> list = new ArrayList<>();
+            boolean p = true;
 
             @Override
             public FluentParser<List<Integer>> accept(List<Integer> value) {
-                if (!value.isEmpty() && !lista.isEmpty()) {
-                    if (lista.size() != value.size() - 1) {
-                        throw new IllegalStateException();
-                    }
-                    for (int i = 0; i < lista.size(); i++) {
-                        if (!lista.get(i).equals(value.get(i))) {
-                            throw new IllegalStateException();
+                if (p && value.isEmpty()) {
+                    p = false;
+                    return this;
+                }
+                if (value.size() == list.size() + 1) {
+                    if (list.size() != 0) {
+                        if (value.getLast() == list.getLast() + 1) {
+                            list = value;
+                            return this;
                         }
-                    }
-                    if (lista.getLast() + 1 != value.getLast()) {
+                        throw new IllegalStateException();
+                    } else {
+                        if (value.get(0) == 0) {
+                            list = value;
+                            return this;
+                        }
                         throw new IllegalStateException();
                     }
                 }
-                lista = new ArrayList<>(value);
-                return this;
+                throw new IllegalStateException();
             }
+
         };
     }
 
     @Override
     public FluentParser<Integer> repetitiveIncrementalNaturals() {
         return new FluentParser<Integer>() {
-            int current = -1;
-            int count = 0;
+
+            boolean inizio = true;
+            int count = 1;
+            int current = 0;
+            List<Integer> tmp = new ArrayList<>();
 
             @Override
             public FluentParser<Integer> accept(Integer value) {
-                if (current == 0 && value == 0 && count != 1) {
+                if (current < count) {
+                    if (value == current++) {
+                        return this;
+                    }
                     throw new IllegalStateException();
                 }
-                if (value == 0) {
-                    current = -1;
-                }
-                if (value != current + 1) {
-                    throw new IllegalStateException();
-                }
-                current = value;
+                current = 0;
                 count++;
-                return this;
+                if (value == current++) {
+                    return this;
+                }
+                throw new IllegalStateException();
             }
 
         };
@@ -74,51 +88,30 @@ public class FluentParserFactoryImpl implements FluentParserFactory {
 
     @Override
     public FluentParser<String> repetitiveIncrementalStrings(String s) {
-        return new FluentParser<String>() {
-            String current = "";
-            int count = 0;
-
-            @Override
-            public FluentParser<String> accept(String value) {
-                if (current.equals(s) && value.equals(s) && count != 1) {
-                    throw new IllegalStateException();
-                }
-                if (value.equals(s)) {
-                    current = "";
-                }
-                if (!value.equals(current + s)) {
-                    throw new IllegalStateException();
-                }
-                current = value;
-                count++;
-                return this;
-            }
-
-        };
+        return null;
     }
 
     @Override
     public FluentParser<Pair<Integer, List<String>>> incrementalPairs(int i0, UnaryOperator<Integer> op, String s) {
         return new FluentParser<Pair<Integer, List<String>>>() {
-            int current = i0;
+
+            Pair<Integer, List<String>> current = new Pair<>(i0, new ArrayList<>());
 
             @Override
             public FluentParser<Pair<Integer, List<String>>> accept(Pair<Integer, List<String>> value) {
-                if (value.getX() != current) {
-                    throw new IllegalStateException();
+                if (value.equals(current)) {
+                    int c = op.apply(current.getX());
+                    current = new Pair<Integer, List<String>>(c, getList(c, s));
+                    return this;
                 }
-                if (value.getY().size() != current) {
-                    for (String string : value.getY()) {
-                        if (!string.equals(s)) {
-                            throw new IllegalStateException();
-                        }
-                    }
-                }
-                current = op.apply(current);
-                return this;
+                throw new IllegalStateException();
             }
 
         };
+    }
+
+    private List<String> getList(int count, String s) {
+        return Stream.generate(() -> s).limit(count).toList();
     }
 
 }

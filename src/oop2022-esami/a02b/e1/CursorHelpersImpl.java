@@ -1,8 +1,8 @@
 package a02b.e1;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class CursorHelpersImpl implements CursorHelpers {
 
@@ -19,11 +19,11 @@ public class CursorHelpersImpl implements CursorHelpers {
 
             @Override
             public boolean advance() {
-                if (++current >= list.size()) {
-                    current--;
-                    return false;
+                if (++current < list.size()) {
+                    return true;
                 }
-                return true;
+                current--;
+                return false;
             }
 
         };
@@ -53,7 +53,7 @@ public class CursorHelpersImpl implements CursorHelpers {
     public <X> Cursor<X> take(Cursor<X> input, int max) {
         return new Cursor<X>() {
 
-            int current = 0;
+            int current = 1;
 
             @Override
             public X getElement() {
@@ -62,34 +62,32 @@ public class CursorHelpersImpl implements CursorHelpers {
 
             @Override
             public boolean advance() {
-                if (input.advance()) {
-                    current++;
-                    if (current >= max) {
-                        return false;
-                    }
+                if (input.advance() && current++ < max) {
                     return true;
-                } else {
-                    return false;
                 }
+                return false;
             }
+
         };
     }
 
     @Override
     public <X> void forEach(Cursor<X> input, Consumer<X> consumer) {
-        do {
-            consumer.accept(input.getElement());
-        } while (input.advance());
+        Stream.generate(() -> {
+            X x = input.getElement();
+            input.advance();
+            return x;
+        }).forEach(i -> consumer.accept(i));
     }
 
     @Override
     public <X> List<X> toList(Cursor<X> input, int max) {
-        List<X> lista = new ArrayList<>();
-        lista.add(input.getElement());
-        for (int i = 1; i < max && input.advance(); i++) {
-            lista.add(input.getElement());
-        }
-        return lista;
+        List<X> list = Stream.generate(() -> {
+            X x = input.getElement();
+            input.advance();
+            return x;
+        }).limit(max).toList();
+        return list.stream().distinct().toList();
     }
 
 }

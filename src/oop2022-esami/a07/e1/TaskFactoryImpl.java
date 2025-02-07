@@ -3,7 +3,6 @@ package a07.e1;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.TreeSet;
 
 public class TaskFactoryImpl implements TaskFactory {
 
@@ -15,17 +14,17 @@ public class TaskFactoryImpl implements TaskFactory {
 
             @Override
             public void reset() {
-                this.count = 0;
+                count = 0;
             }
 
             @Override
             public void computationStep() {
-                this.count++;
+                count++;
             }
 
             @Override
             public Integer temporaryResult() {
-                return this.count;
+                return count;
             }
 
         };
@@ -34,25 +33,30 @@ public class TaskFactoryImpl implements TaskFactory {
     @Override
     public Task<List<Integer>> fibonacciSequenceCreator() {
         return new Task<List<Integer>>() {
-            List<Integer> lista;
+
+            List<Integer> list = new ArrayList<>();
 
             @Override
             public void reset() {
-                lista = new ArrayList<>();
+                list = new ArrayList<>();
             }
 
             @Override
             public void computationStep() {
-                if (lista.size() >= 2) {
-                    lista.add(lista.get(lista.size() - 1) + lista.get(lista.size() - 2));
-                } else {
-                    lista.add(lista.size());
+                if (list.isEmpty()) {
+                    list.add(0);
+                    return;
                 }
+                if (list.size() == 1) {
+                    list.add(1);
+                    return;
+                }
+                list.add(list.get(list.size() - 2) + list.get(list.size() - 1));
             }
 
             @Override
             public List<Integer> temporaryResult() {
-                return lista;
+                return list;
             }
 
         };
@@ -61,24 +65,23 @@ public class TaskFactoryImpl implements TaskFactory {
     @Override
     public Task<Set<Integer>> removeBiggerThan(Set<Integer> set, int bound) {
         return new Task<Set<Integer>>() {
-            TreeSet<Integer> settone = new TreeSet<>(set);
 
             @Override
             public void reset() {
-                settone = new TreeSet<Integer>(set);
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'reset'");
             }
 
             @Override
             public void computationStep() {
-                Integer higher = settone.higher(bound);
-                if (higher != null) {
-                    settone.remove(higher);
-                }
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'computationStep'");
             }
 
             @Override
             public Set<Integer> temporaryResult() {
-                return settone;
+                // TODO Auto-generated method stub
+                throw new UnsupportedOperationException("Unimplemented method 'temporaryResult'");
             }
 
         };

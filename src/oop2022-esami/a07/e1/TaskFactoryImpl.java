@@ -1,6 +1,7 @@
 package a07.e1;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -64,27 +65,6 @@ public class TaskFactoryImpl implements TaskFactory {
 
     @Override
     public Task<Set<Integer>> removeBiggerThan(Set<Integer> set, int bound) {
-        return new Task<Set<Integer>>() {
-
-            @Override
-            public void reset() {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'reset'");
-            }
-
-            @Override
-            public void computationStep() {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'computationStep'");
-            }
-
-            @Override
-            public Set<Integer> temporaryResult() {
-                // TODO Auto-generated method stub
-                throw new UnsupportedOperationException("Unimplemented method 'temporaryResult'");
-            }
-
-        };
-    }
-
+        return null;
+    };
 }

@@ -40,6 +40,7 @@ public class GUI extends JFrame {
 
     private void draw() {
         for (Map.Entry<JButton, Position> entry : cells.entrySet()) {
+            entry.getKey().setText("");
             if (logic.get(entry.getValue())) {
                 entry.getKey().setText("*");
             }

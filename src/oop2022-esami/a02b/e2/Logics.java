@@ -1,13 +1,17 @@
 package a02b.e2;
 
-import java.util.List;
+import a05.e2.Position;
 
 public interface Logics {
 
-    boolean get(Pair<Integer, Integer> position);
+    void hit(Position position);
 
-    List<Pair<Integer, Integer>> checkDiagonals();
+    void get();
 
-    boolean toQuit();
+    boolean isPresent(Position value);
+
+    boolean isDisabled(Position value);
+
+    boolean restart();
 
 }

@@ -1,82 +1,76 @@
 package a02b.e2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+
+import a05.e2.Position;
 
 public class LogicsImpl implements Logics {
 
-    List<List<Boolean>> matrice;
-    boolean quit = false;
     int size;
+    Set<Position> activated;
+    Set<Position> disabled;
+    boolean p = false;
 
-    LogicsImpl(int size) {
+    LogicsImpl(final int size) {
         this.size = size;
-        matrice = new ArrayList<>();
-        for (int i = 0; i < this.size; i++) {
-            List<Boolean> raw = new ArrayList<>();
-            matrice.add(raw);
-            for (int k = 0; k < this.size; k++) {
-                raw.add(false);
-            }
+        this.activated = new HashSet<>();
+        this.disabled = new HashSet<>();
+    }
+
+    @Override
+    public void hit(Position position) {
+        if (!this.activated.contains(position)) {
+            this.activated.add(position);
         }
     }
 
     @Override
-    public boolean get(Pair<Integer, Integer> position) {
-        if (matrice.get(position.getX()).get(position.getY())) {
-            matrice.get(position.getX()).set(position.getY(), false);
-            return false;
-        } else {
-            matrice.get(position.getX()).set(position.getY(), true);
-            return true;
-        }
-    }
-
-    public List<Pair<Integer, Integer>> checkDiagonals() {
-        for (int col = 0; col < size; col++) {
-            List<Pair<Integer, Integer>> result = checkSingleDiagonal(0, col);
-            if (result != null) {
-                this.quit = true;
-                return result;
-            }
-        }
-
-        for (int row = 1; row < size; row++) {
-            List<Pair<Integer, Integer>> result = checkSingleDiagonal(row, 0);
-            if (result != null) {
-                this.quit = true;
-                return result;
-            }
-        }
-
-        this.quit = false;
-        return new ArrayList<>();
-    }
-
-    private List<Pair<Integer, Integer>> checkSingleDiagonal(int startRow, int startCol) {
-        List<Pair<Integer, Integer>> diagonal = new ArrayList<>();
+    public void get() {
+        int raw;
+        int i;
         int count = 0;
-        int row = startRow, col = startCol;
-
-        while (row < size && col < size) {
-            diagonal.add(new Pair<>(row, col));
-            if (matrice.get(row).get(col)) {
-                count++;
+        for (int col = 0; col < size; col++) {
+            i = col;
+            raw = 0;
+            while (i < size && raw < size) {
+                if (this.activated.contains(new Position(i, raw))) {
+                    count++;
+                }
+                i++;
+                raw++;
             }
-            row++;
+            if (count == 3) {
+                disabled.addAll(recupera(col, 0));
+                this.p = true;
+                break;
+            }
+        }
+    }
+
+    private Set<Position> recupera(int col, int raw) {
+        Set<Position> set = new HashSet<>();
+        while (col < size && raw < size) {
+            set.add(new Position(col, raw));
             col++;
+            raw++;
         }
-
-        if (count == 3) {
-            return diagonal;
-        }
-
-        return null;
+        return set;
     }
 
     @Override
-    public boolean toQuit() {
-        return this.quit;
+    public boolean isPresent(Position value) {
+        return this.activated.contains(value);
+    }
+
+    @Override
+    public boolean isDisabled(Position value) {
+        return this.disabled.contains(value);
+    }
+
+    @Override
+    public boolean restart() {
+        return this.p;
     }
 
 }

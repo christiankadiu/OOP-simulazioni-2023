@@ -6,8 +6,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
-public class ParserFactoryImpl implements ParserFactory{
+public class ParserFactoryImpl implements ParserFactory {
 
     @Override
     public <X> Parser<X> fromFinitePossibilities(Set<List<X>> acceptedSequences) {
@@ -16,64 +17,52 @@ public class ParserFactoryImpl implements ParserFactory{
             @Override
             public boolean accept(Iterator<X> iterator) {
                 List<X> list = new ArrayList<>();
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     list.add(iterator.next());
                 }
                 return acceptedSequences.contains(list);
             }
-            
+
         };
     }
 
     @Override
     public <X> Parser<X> fromGraph(X x0, Set<Pair<X, X>> transitions, Set<X> acceptanceInputs) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'fromGraph'");
-    }
-
-    @Override
-    public <X> Parser<X> fromIteration(X x0, Function<X, Optional<X>> next) {
         return new Parser<X>() {
 
-            Optional<X> x = Optional.of(x0);
+            X start = x0;
+            X second;
 
             @Override
             public boolean accept(Iterator<X> iterator) {
-                while(iterator.hasNext()){
-                    if (!x.isPresent() || !iterator.next().equals(x.get())){
+                if (iterator.hasNext()) {
+                    second = iterator.next();
+
+                    if (transitions.contains(new Pair<X, X>(start, second))) {
+                        start = second;
+                        return accept(iterator);
+                    } else {
                         return false;
                     }
-                    if (x.isPresent()){
-                       
-                    } x = next.apply(x.get());
                 }
-                if (x.isEmpty()){
+                if (acceptanceInputs.contains(second)) {
                     return true;
                 }
                 return false;
             }
-            
         };
     }
 
     @Override
-    public <X> Parser<X> recursive(Function<X, Optional<Parser<X>>> nextParser, boolean isFinal) {
-        return new Parser<X>() {
+    public <X> Parser<X> fromIteration(X x0, Function<X, Optional<X>> next) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'fromIteration'");
+    }
 
-            @Override
-            public boolean accept(Iterator<X> iterator) {
-                if (!iterator.hasNext()){
-                    return isFinal;
-                }
-                while (iterator.hasNext()){
-                    if (nextParser.apply(iterator.next()).isEmpty()){
-                        return false;
-                    }
-                }
-                return true;
-            }
-            
-        };
+    @Override
+    public <X> Parser<X> recursive(Function<X, Optional<Parser<X>>> nextParser, boolean isFinal) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'recursive'");
     }
 
     @Override
@@ -81,5 +70,5 @@ public class ParserFactoryImpl implements ParserFactory{
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'fromParserWithInitial'");
     }
-    
+
 }

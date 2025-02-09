@@ -28,15 +28,12 @@ public class ListBuilderFactoryImpl implements ListBuilderFactory {
 
         @Override
         public ListBuilder<T> replaceAll(T t, ListBuilder<T> lb) {
-            boolean p = true;
-            while (p) {
-                int index = list.indexOf(t);
-                if (index == -1) {
-                    p = false;
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).equals(t)) {
+                    list = replace(list, i, lb.build());
                 }
-                replace(list, index, lb.build());
             }
-            return this;
+            return fromList(list);
         }
 
         @Override

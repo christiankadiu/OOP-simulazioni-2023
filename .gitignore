@@ -1,0 +1,19 @@
+# ignore the bin folder and all its contents
+bin/
+# ignore every pdf file
+*.pdf
+# rule exception (beginning with a !): pdf files named 'myImportantFile.pdf' should be tracked
+!myImportantFile.pdf
+Going to a new line is more complicated than it seems
+Going to a new line is a two-phased operation:
+
+Bring the cursor back to the begin of the line
+Bring the cursor down one line
+In electromechanic teletypewriters (and in typewriters, too), they were two distinct operations:
+
+Carriage Return (bringing the carriage to its leftmost position)
+Line Feed (rotating the carriage of one step)
+A teletypewriter
+teletypewriter
+
+driving them text without drivers required to explicitly send carriage return and line feed commands
